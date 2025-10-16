@@ -16,9 +16,23 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   const [selectedStory, setSelectedStory] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Helper function to get file URL from URI
+  // Helper function to get file URL from URI with improved matching
   const getFileUrl = (uri: string): string | null => {
-    const file = files.find(f => f.path.includes(uri))
+    // First try exact path match
+    let file = files.find(f => f.path === uri)
+    
+    // If not found, try partial match (for cases where path might be slightly different)
+    if (!file) {
+      const uriParts = uri.split('/')
+      const fileName = uriParts[uriParts.length - 1]
+      file = files.find(f => f.name === fileName)
+    }
+    
+    // If still not found, try more flexible matching
+    if (!file) {
+      file = files.find(f => f.path.includes(uri) || uri.includes(f.name))
+    }
+    
     return file?.url || null
   }
 
@@ -33,9 +47,45 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
     })
   }
 
-  // Helper function to get media type
-  const getMediaType = (media: { media_metadata: { video_metadata?: unknown } }): 'photo' | 'video' => {
-    return media.media_metadata.video_metadata ? 'video' : 'photo'
+  // Enhanced media type detection using multiple methods
+  const getMediaType = (media: { 
+    media_metadata: { 
+      video_metadata?: unknown
+      photo_metadata?: unknown
+    }
+    uri: string
+  }): 'photo' | 'video' => {
+    // Method 1: Check metadata (primary method)
+    if (media.media_metadata.video_metadata) {
+      return 'video'
+    }
+    if (media.media_metadata.photo_metadata) {
+      return 'photo'
+    }
+    
+    // Method 2: Check file extension as fallback
+    const uriParts = media.uri.split('.')
+    const extension = uriParts[uriParts.length - 1]?.toLowerCase()
+    
+    if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(extension || '')) {
+      return 'video'
+    }
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension || '')) {
+      return 'photo'
+    }
+    
+    // Method 3: Check if we can find the file and determine its type
+    const file = files.find(f => f.path.includes(media.uri) || media.uri.includes(f.name))
+    if (file?.type === 'video') {
+      return 'video'
+    }
+    if (file?.type === 'image') {
+      return 'photo'
+    }
+    
+    // Default to photo if uncertain
+    console.warn('Could not determine media type for:', media.uri)
+    return 'photo'
   }
 
   // Helper function to decode emoji and Unicode characters
@@ -121,25 +171,73 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
               >
                 {/* Story Thumbnail */}
                 <div className="relative w-full h-full overflow-hidden">
-                  {getMediaType(story) === 'video' ? (
-                    <div className="relative w-full h-full">
-                      <video
-                        src={getFileUrl(story.uri) || ''}
-                        className="w-full h-full object-cover"
-                        muted
-                      />
-                      <div className="absolute top-2 right-2">
-                        <Play className="w-4 h-4 text-white drop-shadow-lg" />
-                      </div>
-                    </div>
-                  ) : (
-                    <Image
-                      src={getFileUrl(story.uri) || ''}
-                      alt="Story thumbnail"
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-200"
-                    />
-                  )}
+                  {(() => {
+                    const mediaType = getMediaType(story)
+                    const fileUrl = getFileUrl(story.uri)
+                    
+                    // Debug logging for troubleshooting
+                    if (!fileUrl) {
+                      console.warn('No file URL found for story:', story.uri)
+                    }
+                    
+                    if (mediaType === 'video') {
+                      return (
+                        <div className="relative w-full h-full">
+                          <video
+                            src={fileUrl || ''}
+                            className="w-full h-full object-cover"
+                            muted
+                            onError={(e) => {
+                              console.error('Video load error for:', story.uri, e)
+                            }}
+                            onLoadStart={() => {
+                              console.log('Video loading started for:', story.uri)
+                            }}
+                          />
+                          <div className="absolute top-2 right-2">
+                            <Play className="w-4 h-4 text-white drop-shadow-lg" />
+                          </div>
+                          {/* Fallback for failed video loads */}
+                          {!fileUrl && (
+                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                              <div className="text-center text-white text-xs">
+                                <Play className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                <p>Video unavailable</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    } else {
+                      return (
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={fileUrl || ''}
+                            alt="Story thumbnail"
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={(e) => {
+                              console.error('Image load error for:', story.uri, e)
+                            }}
+                            onLoad={() => {
+                              console.log('Image loaded successfully for:', story.uri)
+                            }}
+                          />
+                          {/* Fallback for failed image loads */}
+                          {!fileUrl && (
+                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                              <div className="text-center text-white text-xs">
+                                <div className="w-8 h-8 mx-auto mb-2 bg-gray-600 rounded flex items-center justify-center">
+                                  📷
+                                </div>
+                                <p>Image unavailable</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    }
+                  })()}
                   
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
@@ -177,22 +275,37 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                 <div className="relative">
                   {/* Story Media */}
                   <div className="relative">
-                    {getMediaType(story) === 'video' ? (
-                      <video
-                        src={getFileUrl(story.uri) || ''}
-                        controls
-                        autoPlay
-                        className="w-full h-auto max-h-[80vh] object-contain rounded"
-                      />
-                    ) : (
-                      <Image
-                        src={getFileUrl(story.uri) || ''}
-                        alt="Story media"
-                        width={1200}
-                        height={800}
-                        className="w-full h-auto max-h-[80vh] object-contain rounded"
-                      />
-                    )}
+                    {(() => {
+                      const mediaType = getMediaType(story)
+                      const fileUrl = getFileUrl(story.uri)
+                      
+                      if (mediaType === 'video') {
+                        return (
+                          <video
+                            src={fileUrl || ''}
+                            controls
+                            autoPlay
+                            className="w-full h-auto max-h-[80vh] object-contain rounded"
+                            onError={(e) => {
+                              console.error('Modal video load error for:', story.uri, e)
+                            }}
+                          />
+                        )
+                      } else {
+                        return (
+                          <Image
+                            src={fileUrl || ''}
+                            alt="Story media"
+                            width={1200}
+                            height={800}
+                            className="w-full h-auto max-h-[80vh] object-contain rounded"
+                            onError={(e) => {
+                              console.error('Modal image load error for:', story.uri, e)
+                            }}
+                          />
+                        )
+                      }
+                    })()}
                   </div>
                 
                   {/* Story Title and Date - positioned under the image */}

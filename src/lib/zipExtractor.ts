@@ -2,13 +2,27 @@ import JSZip from 'jszip';
 import { ExtractedFile, ZipExtractionResult, InstagramUser, InstagramList, ProfileChange, RecommendedTopic, InstagramPost, InstagramStory } from '@/types/instagram';
 import { findUnfollowers } from '@/lib/unfollowers';
 
-// Utility function to determine file type based on extension
+// Enhanced utility function to determine file type based on extension
 function getFileType(filename: string): 'json' | 'image' | 'video' | 'other' {
   const ext = filename.toLowerCase().split('.').pop();
   
   if (ext === 'json') return 'json';
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext || '')) return 'image';
-  if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(ext || '')) return 'video';
+  
+  // Image formats (including more comprehensive list)
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'svg'].includes(ext || '')) {
+    return 'image';
+  }
+  
+  // Video formats (including more comprehensive list)
+  if (['mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv', 'm4v', '3gp', 'ogv'].includes(ext || '')) {
+    return 'video';
+  }
+  
+  // For files without extensions, try to infer from path
+  if (filename.includes('media/stories/') || filename.includes('media/posts/')) {
+    // If it's in a media folder but no extension, default to image
+    return 'image';
+  }
   
   return 'other';
 }
@@ -520,10 +534,23 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
             if (relativePath.includes('media/')) {
               const blob = await zipEntry.async('blob');
               url = URL.createObjectURL(blob);
+              console.log(`Created URL for ${fileType}: ${relativePath} -> ${url}`);
+            } else {
+              console.log(`Skipping ${fileType} file outside media folder: ${relativePath}`);
             }
           }
         } catch (error) {
           console.warn(`Error processing file ${zipEntry.name}:`, error);
+          // For media files, still try to create URL even if there's an error
+          if ((fileType === 'image' || fileType === 'video') && relativePath.includes('media/')) {
+            try {
+              const blob = await zipEntry.async('blob');
+              url = URL.createObjectURL(blob);
+              console.log(`Created URL for ${fileType} after error recovery: ${relativePath}`);
+            } catch (secondError) {
+              console.error(`Failed to create URL for ${relativePath}:`, secondError);
+            }
+          }
         }
         
         extractedFiles.push({

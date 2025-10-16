@@ -64,7 +64,8 @@ export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: P
     if (!gender) return 'Unknown';
     return gender.charAt(0).toUpperCase() + gender.slice(1);
   };
-
+  
+  // Helper function to decode emoji/unicode characters
   const decodeEmoji = (encodedString?: string) => {
     if (!encodedString || typeof encodedString !== 'string') {
       return '';

@@ -24,7 +24,25 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
 
   // Helper function to format timestamp
   const formatDate = (timestamp: number): string => {
-    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+    // Debug logging to understand timestamp values
+    console.log('Formatting timestamp:', timestamp, 'Type:', typeof timestamp)
+    
+    // Handle invalid or zero timestamps
+    if (!timestamp || timestamp === 0 || isNaN(timestamp)) {
+      console.warn('Invalid or zero timestamp:', timestamp)
+      return 'Date not available'
+    }
+    
+    // Handle both Unix timestamp (seconds) and milliseconds
+    const date = new Date(timestamp > 1000000000000 ? timestamp : timestamp * 1000)
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid timestamp:', timestamp)
+      return 'Invalid Date'
+    }
+    
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -174,6 +192,18 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
             
             {(() => {
               const post = posts[selectedPost]
+              // Debug logging for post structure
+              console.log('Post structure:', post)
+              console.log('Post title:', post.title)
+              console.log('Post creation_timestamp:', post.creation_timestamp)
+              
+              // Fallback to media-level data if post-level data is missing
+              const postTitle = post.title || (post.media[0]?.title) || ''
+              const postTimestamp = post.creation_timestamp || (post.media[0]?.creation_timestamp) || 0
+              
+              console.log('Using title:', postTitle)
+              console.log('Using timestamp:', postTimestamp)
+              
               return (
                 <div className="relative">
                   {/* Post Media */}
@@ -257,15 +287,15 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                   {/* Post Title and Date - positioned under the image */}
                   <div className="p-4 bg-white/5 backdrop-blur-sm">
                     {/* Post Title */}
-                    {post.title && (
+                    {postTitle && (
                       <div className="mb-3">
-                        <p className="text-white text-sm leading-relaxed">{decodeEmoji(post.title)}</p>
+                        <p className="text-white text-sm leading-relaxed">{decodeEmoji(postTitle)}</p>
                       </div>
                     )}
                     
-                    {/* Post Date */}
+                    {/* Post Date - use fallback timestamp */}
                     <div className="text-white/70 text-xs">
-                      {formatDate(post.creation_timestamp)}
+                      {formatDate(postTimestamp)}
                     </div>
                   </div>
                 </div>
