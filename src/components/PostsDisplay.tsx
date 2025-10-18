@@ -4,7 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { InstagramPost, ExtractedFile } from "@/types/instagram"
-import { Play, ChevronLeft, ChevronRight, X } from "lucide-react"
+import { Play, ChevronLeft, ChevronRight, X, Share2 } from "lucide-react"
+import { shareMedia } from "@/lib/shareUtils"
 
 interface PostsDisplayProps {
   posts: InstagramPost[]
@@ -72,9 +73,6 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
     }
   };
 
-
-
-
   // Helper functions for modal navigation
   const openModal = (postIndex: number) => {
     setSelectedPost(postIndex)
@@ -111,6 +109,29 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
     return media.media_metadata.video_metadata ? 'video' : 'photo'
   }
 
+  // Helper function to handle sharing
+  const handleShare = async (post: InstagramPost, mediaIndex: number = 0) => {
+    const media = post.media[mediaIndex]
+    const mediaType = getMediaType(media)
+    const fileUrl = getFileUrl(media.uri)
+    
+    if (!fileUrl) {
+      console.error('No file URL available for sharing')
+      return
+    }
+
+    const title = post.title || (media.title) || `Instagram ${mediaType}`
+    const text = `Check out this ${mediaType} from my Instagram archive`
+    
+    // Convert 'photo' to 'image' for the shareMedia function
+    const shareMediaType = mediaType === 'photo' ? 'image' : 'video'
+    
+    try {
+      await shareMedia(fileUrl, shareMediaType, title, text)
+    } catch (error) {
+      console.error('Failed to share post:', error)
+    }
+  }
 
   if (!posts || posts.length === 0) {
     return (
@@ -206,6 +227,16 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
               
               return (
                 <div className="relative">
+                  {/* Share Button - positioned on top of image */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="absolute top-4 right-16 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
+                    onClick={() => handleShare(post, currentMediaIndex)}
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </Button>
+                  
                   {/* Post Media */}
                   <div className="relative">
                     {post.media.length === 1 ? (

@@ -5,7 +5,8 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { InstagramStory, ExtractedFile } from "@/types/instagram"
-import { Play, X, Calendar } from "lucide-react"
+import { Play, X, Calendar, Share2 } from "lucide-react"
+import { shareMedia } from "@/lib/shareUtils"
 
 interface StoriesDisplayProps {
   stories: InstagramStory
@@ -106,6 +107,29 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
       console.error("Failed to decode emoji string:", error);
       // Return original string if decoding fails
       return encodedString;
+    }
+  }
+
+  // Helper function to handle sharing
+  const handleShare = async (story: typeof stories.ig_stories[0]) => {
+    const mediaType = getMediaType(story)
+    const fileUrl = getFileUrl(story.uri)
+    
+    if (!fileUrl) {
+      console.error('No file URL available for sharing')
+      return
+    }
+
+    const title = story.title || `Instagram story`
+    const text = `Check out this story from my Instagram archive`
+    
+    // Convert 'photo' to 'image' for the shareMedia function
+    const shareMediaType = mediaType === 'photo' ? 'image' : 'video'
+    
+    try {
+      await shareMedia(fileUrl, shareMediaType, title, text)
+    } catch (error) {
+      console.error('Failed to share story:', error)
     }
   }
 
@@ -267,6 +291,16 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
               onClick={closeModal}
             >
               <X className="w-4 h-4" />
+            </Button>
+            
+            {/* Share Button - positioned on top of image */}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="absolute top-4 right-16 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
+              onClick={() => handleShare(stories.ig_stories[selectedStory])}
+            >
+              <Share2 className="w-4 h-4" />
             </Button>
             
             {(() => {
