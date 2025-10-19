@@ -90,7 +90,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <HelpCircle className="h-6 w-6" />
@@ -101,9 +101,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6">
-          
-
+        <div className="flex-1 overflow-y-auto space-y-6">
           {/* Current Step Card */}
           <Card className="min-h-[400px]">
             <CardHeader>
@@ -127,7 +125,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
           </Card>
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-shrink-0">
             <Button
               variant="outline"
               onClick={handlePrevious}
@@ -167,7 +165,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
 
           {/* Important Notes - Only show on last step */}
           {currentStep === steps.length && (
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 flex-shrink-0">
               <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Important Notes:</h4>
               <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                 <li>• Instagram may take up to 30 days to prepare your data</li>
