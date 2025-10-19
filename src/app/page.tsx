@@ -19,6 +19,7 @@ import { ZipExtractionResult } from "@/types/instagram"
 import { loadEssentialConnectionsData, saveEssentialConnectionsData, extractEssentialConnectionsData, EssentialConnectionsData } from "@/lib/essentialStorage"
 import { Instagram, Upload, Download, Shield, Smartphone, Users, User, MapPin, History, Sparkles, HardDrive } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { InstagramLimitationsWarning, InstagramLimitationsInfo } from "@/components/InstagramLimitationsWarning"
 
 export default function Home() {
   const [extractedData, setExtractedData] = useState<ZipExtractionResult | null>(null)
@@ -98,6 +99,12 @@ export default function Home() {
 
   const handleDataExtracted = (data: ZipExtractionResult) => {
     setExtractedData(data)
+    
+    // Clear warning closed states when new data is imported
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('instagram-warning-closed')
+      localStorage.removeItem('instagram-info-closed')
+    }
     
     // Always save essential data (connections, personal info, profile changes, locations)
     try {
@@ -286,6 +293,17 @@ export default function Home() {
               {/* User Profile */}
               {extractedData.userData && (
                 <UserProfile user={extractedData.userData} />
+              )}
+
+              {/* Instagram Limitations Warning */}
+              {extractedData && (
+                <>
+                  <InstagramLimitationsWarning 
+                    followersData={extractedData.followers}
+                    followingData={extractedData.following}
+                  />
+                  <InstagramLimitationsInfo />
+                </>
               )}
 
               {/* Instagram Lists with Interactive Stats */}

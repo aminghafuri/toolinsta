@@ -165,13 +165,18 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
 
           {/* Important Notes - Only show on last step */}
           {currentStep === steps.length && (
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 flex-shrink-0">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Important Notes:</h4>
-              <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800 flex-shrink-0">
+              <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">⚠️ Important Instagram Export Limitations:</h4>
+              <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
                 <li>• Instagram may take up to 30 days to prepare your data</li>
                 <li>• The download link expires after 4 days</li>
                 <li>• Your data is processed locally in your browser - nothing is sent to our servers</li>
                 <li>• This tool works with the standard Instagram data export format</li>
+                <li>• <strong>Instagram&apos;s export system has known issues with followers data</strong></li>
+                <li>• <strong>Followers list is often incomplete - Instagram misses certain date ranges</strong></li>
+                <li>• Following data is usually complete and accurate</li>
+                <li>• This is a limitation of Instagram&apos;s export system, not this tool</li>
+                <li>• The unfollowers calculation uses smart date filtering to improve accuracy</li>
               </ul>
             </div>
           )}

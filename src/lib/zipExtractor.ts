@@ -632,6 +632,12 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
             followingForUnfollowers as Array<{ string_list_data: Array<{ value: string; timestamp: number; href?: string }> }>
           );
           unfollowers = result.unfollowers;
+          
+          // Log the date filtering information for debugging
+          if (result.dateFilterApplied) {
+            console.log(`Unfollowers calculation: Applied date filter from ${new Date(result.lowestFollowersTimestamp * 1000).toISOString()}`);
+            console.log(`Filtered following data: ${result.filteredFollowing} out of ${result.totalFollowing} entries`);
+          }
         }
       } catch (error) {
         console.warn('Error calculating unfollowers:', error);
