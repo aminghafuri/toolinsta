@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { clsx } from "clsx"
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -7,8 +8,8 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+    className={clsx(
+      "rounded-2xl bg-white/20 dark:bg-black/40 backdrop-blur-lg bg-clip-padding border border-white/20 dark:border-white/10 shadow-lg ring-1 ring-white/10 dark:ring-white/10",
       className
     )}
     {...props}

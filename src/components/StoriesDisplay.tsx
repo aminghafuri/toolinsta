@@ -186,7 +186,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
           </div>
 
           {/* Instagram-style Grid for this date */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-1">
+          <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-1">
             {dayStories.map((story) => (
               <div
                 key={story.originalIndex}

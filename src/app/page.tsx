@@ -161,7 +161,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-[#181e29] dark:via-[#312e81] dark:to-[#21223b] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_20%_25%,rgba(129,140,248,0.05)_0%,transparent_70%),radial-gradient(38%_52%_at_70%_80%,rgba(236,72,153,0.056)_0%,transparent_68%),radial-gradient(60%_55%_at_85%_17%,rgba(6,182,212,0.09)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
       {/* Header */}
       <header className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
@@ -195,7 +195,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {!extractedData ? (
           // Upload Section
           <div className="space-y-8">
