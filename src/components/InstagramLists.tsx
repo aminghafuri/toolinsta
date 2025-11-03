@@ -197,31 +197,32 @@ export default function InstagramLists({
   }
 
   const getColorClasses = (color: string, isActive: boolean = false) => {
+    const neutralBorder = 'border-2 border-slate-300 dark:border-slate-700'
     const colorMap: Record<string, string> = {
       pink: isActive 
-        ? 'border-2 border-pink-500 text-pink-700' 
-        : 'border border-pink-200 text-pink-600 hover:border-pink-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-pink-500 text-pink-700 dark:text-pink-500' 
+        : `${neutralBorder} text-pink-600 dark:text-pink-400 hover:border-pink-500 dark:hover:border-pink-400 transition-colors delay-75 duration-200`,
       purple: isActive 
-        ? 'border-2 border-purple-500 text-purple-700' 
-        : 'border border-purple-200 text-purple-600 hover:border-purple-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-purple-500 text-purple-700 dark:text-purple-500' 
+        : `${neutralBorder} text-purple-600 dark:text-purple-400 hover:border-purple-500 dark:hover:border-purple-400 transition-colors delay-75 duration-200`,
       blue: isActive 
-        ? 'border-2 border-blue-500 text-blue-700' 
-        : 'border border-blue-200 text-blue-600 hover:border-blue-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-blue-500 text-blue-700 dark:text-blue-500' 
+        : `${neutralBorder} text-blue-600 dark:text-blue-400 hover:border-blue-500 dark:hover:border-blue-400 transition-colors delay-75 duration-200`,
       red: isActive 
-        ? 'border-2 border-red-500 text-red-700' 
-        : 'border border-red-200 text-red-600 hover:border-red-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-red-500 text-red-700 dark:text-red-500' 
+        : `${neutralBorder} text-red-600 dark:text-red-400 hover:border-red-500 dark:hover:border-red-400 transition-colors delay-75 duration-200`,
       orange: isActive 
-        ? 'border-2 border-orange-500 text-orange-700' 
-        : 'border border-orange-200 text-orange-600 hover:border-orange-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-orange-500 text-orange-700 dark:text-orange-500' 
+        : `${neutralBorder} text-orange-600 dark:text-orange-400 hover:border-orange-500 dark:hover:border-orange-400 transition-colors delay-75 duration-200`,
       green: isActive 
-        ? 'border-2 border-green-500 text-green-700' 
-        : 'border border-green-200 text-green-600 hover:border-green-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-green-500 text-green-700 dark:text-green-500' 
+        : `${neutralBorder} text-green-600 dark:text-green-400 hover:border-green-500 dark:hover:border-green-400 transition-colors delay-75 duration-200`,
       yellow: isActive 
-        ? 'border-2 border-yellow-500 text-yellow-700' 
-        : 'border border-yellow-200 text-yellow-600 hover:border-yellow-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-yellow-500 text-yellow-700 dark:text-yellow-500' 
+        : `${neutralBorder} text-yellow-600 dark:text-yellow-400 hover:border-yellow-500 dark:hover:border-yellow-400 transition-colors delay-75 duration-200`,
       gray: isActive 
-        ? 'border-2 border-gray-500 text-gray-700' 
-        : 'border border-gray-200 text-gray-600 hover:border-gray-600 transition-colors delay-75 duration-200',
+        ? 'border-2 border-indigo-500 text-indigo-700 dark:text-indigo-500' 
+        : `${neutralBorder} text-indigo-600 dark:text-indigo-400 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors delay-75 duration-200`,
     }
     return colorMap[color] || colorMap.gray
   }
@@ -277,36 +278,38 @@ export default function InstagramLists({
                   {tabs.find(t => t.id === selectedTab)?.label} ({getListData(selectedTab).length})
                 </h3>
               </div>
-            {/* Search and Filters */}
-            <div className="mb-6 space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder={`Search ${tabs.find(t => t.id === selectedTab)?.label.toLowerCase()}...`}
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="pl-10"
-                />
-              </div>
-              
-              {/* Filter Controls */}
-              <div className="flex items-center gap-2">
-                <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Sort by:</span>
-                <Select
-                  value={sortOption}
-                  onValueChange={(value: SortOption) => {
-                    setSortOption(value)
-                    setCurrentPage(1)
-                  }}
-                >
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
+              {/* Search and Filters */}
+              <div className="mb-6">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Search Input */}
+                  <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
+                  <Input
+                    placeholder={`Search ${tabs.find(t => t.id === selectedTab)?.label.toLowerCase()}...`}
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value)
+                      setCurrentPage(1)
+                    }}
+                    className="pl-10 h-10 bg-card/50 dark:bg-card/40 backdrop-blur-sm border-2 border-border/60 dark:border-border/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all"
+                  />
+                  </div>
+                  
+                  {/* Filter Controls */}
+                  <div className="flex items-center gap-2 sm:flex-shrink-0">
+                  <ArrowUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-sm font-medium text-foreground whitespace-nowrap hidden sm:inline">Sort by:</span>
+                  <Select
+                    value={sortOption}
+                    onValueChange={(value: SortOption) => {
+                      setSortOption(value)
+                      setCurrentPage(1)
+                    }}
+                  >
+                    <SelectTrigger className="h-10 sm:w-[200px] w-full bg-card/50 dark:bg-card/40 backdrop-blur-sm border-2 border-border/60 dark:border-border/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card/95 dark:bg-card/95 backdrop-blur-md border-2 border-border/60 dark:border-border/50">
                     <SelectItem value="date-desc">
                       <div className="flex items-center gap-2">
                         <ArrowDown className="h-3 w-3" />
@@ -332,143 +335,144 @@ export default function InstagramLists({
                       </div>
                     </SelectItem>
                   </SelectContent>
-                </Select>
+                  </Select>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Results */}
-            {currentItems.length > 0 ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-3">
-                  {currentItems.map((item, index) => {
-                    if (!item.username) return null;
-                    
-                    return (
-                      <div
-                        key={`${selectedTab}-${item.username}-${index}`}
-                        className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer select-none"
-                        onClick={() => copyToClipboard(item.username)}
-                        title={`Click to copy "${item.username}" to clipboard`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                              {item.username.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium truncate" title={item.username}>
-                                {item.username}
+              {/* Results */}
+              {currentItems.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    {currentItems.map((item, index) => {
+                      if (!item.username) return null;
+                      
+                      return (
+                        <div
+                          key={`${selectedTab}-${item.username}-${index}`}
+                          className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer select-none"
+                          onClick={() => copyToClipboard(item.username)}
+                          title={`Click to copy "${item.username}" to clipboard`}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                {item.username.charAt(0).toUpperCase()}
                               </div>
-                              {item.timestamp && (
-                                <div className="text-sm text-muted-foreground flex items-center gap-1">
-                                  <Calendar className="h-3 w-3 flex-shrink-0" />
-                                  <span className="truncate">{formatDate(item.timestamp)}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium truncate" title={item.username}>
+                                  {item.username}
                                 </div>
-                              )}
+                                {item.timestamp && (
+                                  <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                    <Calendar className="h-3 w-3 flex-shrink-0" />
+                                    <span className="truncate">{formatDate(item.timestamp)}</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
+                            {item.href && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  window.open(item.href, '_blank')
+                                }}
+                                className="flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+                              >
+                                <span className="hidden sm:inline">View Profile</span>
+                                <span className="sm:hidden">View</span>
+                              </Button>
+                            )}
                           </div>
-                          {item.href && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                window.open(item.href, '_blank')
-                              }}
-                              className="flex-shrink-0 text-xs sm:text-sm px-2 sm:px-3"
-                            >
-                              <span className="hidden sm:inline">View Profile</span>
-                              <span className="sm:hidden">View</span>
-                            </Button>
-                          )}
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <Pagination className="mt-6">
-                    <PaginationContent className="gap-1">
-                      <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          className={cn(
-                            currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer',
-                            'hidden sm:flex'
-                          )}
-                        />
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className="sm:hidden h-8 w-8"
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                        </Button>
-                      </PaginationItem>
-                      
-                      {getVisiblePages().map((page, index) => (
-                        <PaginationItem key={index}>
-                          {page === '...' ? (
-                            <PaginationEllipsis />
-                          ) : (
-                            <PaginationLink
-                              onClick={() => handlePageChange(page as number)}
-                              isActive={currentPage === page}
-                              className="cursor-pointer h-8 w-8 text-sm"
-                            >
-                              {page}
-                            </PaginationLink>
-                          )}
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <Pagination className="mt-6">
+                      <PaginationContent className="gap-1">
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            className={cn(
+                              currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer',
+                              'hidden sm:flex'
+                            )}
+                          />
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="sm:hidden h-8 w-8"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
                         </PaginationItem>
-                      ))}
-                      
-                      <PaginationItem>
-                        <PaginationNext 
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          className={cn(
-                            currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer',
-                            'hidden sm:flex'
-                          )}
-                        />
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          className="sm:hidden h-8 w-8"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </Button>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                )}
+                        
+                        {getVisiblePages().map((page, index) => (
+                          <PaginationItem key={index}>
+                            {page === '...' ? (
+                              <PaginationEllipsis />
+                            ) : (
+                              <PaginationLink
+                                onClick={() => handlePageChange(page as number)}
+                                isActive={currentPage === page}
+                                className="cursor-pointer h-8 w-8 text-sm"
+                              >
+                                {page}
+                              </PaginationLink>
+                            )}
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            className={cn(
+                              currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer',
+                              'hidden sm:flex'
+                            )}
+                          />
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="sm:hidden h-8 w-8"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  )}
 
-                {/* Results info */}
-                <div className="text-center text-sm text-muted-foreground">
-                  Showing {startIndex + 1}-{Math.min(endIndex, filteredList.length)} of {filteredList.length} {tabs.find(t => t.id === selectedTab)?.label.toLowerCase()}
+                  {/* Results info */}
+                  <div className="text-center text-sm text-muted-foreground">
+                    Showing {startIndex + 1}-{Math.min(endIndex, filteredList.length)} of {filteredList.length} {tabs.find(t => t.id === selectedTab)?.label.toLowerCase()}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <div className="text-muted-foreground mb-2">
-                  {searchTerm ? 'No results found' : 'No data available'}
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-muted-foreground mb-2">
+                    {searchTerm ? 'No results found' : 'No data available'}
+                  </div>
+                  {searchTerm && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSearchTerm('')}
+                    >
+                      Clear search
+                    </Button>
+                  )}
                 </div>
-                {searchTerm && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setSearchTerm('')}
-                  >
-                    Clear search
-                  </Button>
-                )}
-              </div>
-            )}
+              )}
             </div>
           )}
         </CardContent>
