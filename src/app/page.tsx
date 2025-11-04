@@ -322,7 +322,7 @@ export default function Home() {
             <TabsContent value="personal" className="space-y-6">
               {/* Nested Tabs for Personal Information */}
               <Tabs defaultValue="info" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-16 sm:h-10">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
                   <TabsTrigger value="info" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                     <User className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="hidden sm:inline">Info</span>

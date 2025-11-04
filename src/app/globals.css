@@ -165,3 +165,18 @@
 .animate-slide-in-fade {
   animation: slide-in-fade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+
+@keyframes drawer-open {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-drawer-open {
+  animation: drawer-open 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
