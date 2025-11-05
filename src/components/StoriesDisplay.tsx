@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +17,11 @@ interface StoriesDisplayProps {
 export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) {
   const [selectedStory, setSelectedStory] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Helper function to get file URL from URI with improved matching
   const getFileUrl = (uri: string): string | null => {
@@ -133,6 +139,18 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
     }
   }
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isModalOpen])
+
   // Helper functions for modal navigation
   const openModal = (storyIndex: number) => {
     setSelectedStory(storyIndex)
@@ -142,6 +160,13 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   const closeModal = () => {
     setIsModalOpen(false)
     setSelectedStory(null)
+  }
+
+  // Handle backdrop click
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      closeModal()
+    }
   }
 
   // Group stories by date
@@ -280,9 +305,24 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
       ))}
 
       {/* Modal for full story view */}
-      {isModalOpen && selectedStory !== null && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white/10 backdrop-blur-md rounded-lg max-w-7xl max-h-[95vh] overflow-hidden relative border border-white/20">
+      {isModalOpen && selectedStory !== null && mounted && createPortal(
+        <div 
+          className="fixed top-0 left-0 w-full h-full bg-black/70 backdrop-blur-lg z-[9999] flex items-center justify-center p-4"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '100vw', 
+            height: '100vh',
+            margin: 0,
+            padding: '1rem'
+          }}
+          onClick={handleBackdropClick}
+        >
+          <div 
+            className="bg-white/10 backdrop-blur-md rounded-lg max-w-7xl max-h-[95vh] overflow-y-auto relative border border-white/20"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Close Button - positioned on top of image */}
             <Button 
               variant="ghost" 
@@ -360,7 +400,8 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
               )
             })()}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
