@@ -180,3 +180,17 @@
 .animate-drawer-open {
   animation: drawer-open 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 4s ease-in-out infinite;
+}

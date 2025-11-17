@@ -1,0 +1,130 @@
+@use "sass:list";
+@use "sass:math";
+
+//---------------------------------------------------
+
+// CHANGE THESE
+
+$series: 'Unfollowers', 'Followers', 'Posts', 'Stories', 'Connections', 'Insights';
+
+$duration: 0.2;
+
+$transition: 1.5;
+
+//---------------------------------------------------
+
+// APPEND EXTRA ITEM - An extra item is needed if the series is of odd length
+
+@if abs(list.length($series)) % 2 == 1 {
+  $lastItem: list.nth($series, 1);
+  $series: list.append($series, $lastItem);
+}
+
+//---------------------------------------------------
+
+// DON'T TOUCH THESE
+
+$seriesLength: list.length($series);
+
+$seriesSplitLength: math.div($seriesLength, 2);
+
+$itemDuration: $duration + $transition;
+
+$twiceItemDuration: $itemDuration * 2;
+
+$totalDuration: $itemDuration * $seriesLength;
+
+//---------------------------------------------------
+
+// STYLE STUFF
+
+.text {
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  color: oklch(59.1% 0.293 322.896);
+  font-size: 350px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+  filter: url(#gooey);
+  transform: translate(-50%, -50%) scale(0.12);
+  transform-origin: center center;
+  transition: color 200ms ease;
+  
+  @media (min-width: 640px) {
+    transform: translate(-50%, -50%) scale(0.16);
+  }
+  
+  @media (min-width: 768px) {
+    transform: translate(-50%, -50%) scale(0.20);
+  }
+  
+  @media (min-width: 1024px) {
+    transform: translate(-50%, -50%) scale(0.24);
+  }
+  
+  @media (min-width: 1280px) {
+    transform: translate(-50%, -50%) scale(0.28);
+  }
+      
+  &::before, &::after {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    animation-duration: #{$totalDuration}s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    filter: blur(3px);
+  }
+
+  &::before {
+    content: list.nth($series, $seriesLength - 1);
+    animation-name: items-odd;
+  }
+
+  &::after {
+    content: list.nth($series, $seriesLength);
+    animation-name: items-even;
+    animation-delay: #{$itemDuration}s;
+  }
+}
+
+.dark .text {
+  color: oklch(87.9% 0.169 91.605);
+}
+
+//---------------------------------------------------
+
+// TRANSITION ANIMATIONS
+
+@mixin keyframes($index) {
+  @for $i from 1 through $seriesLength {
+    #{math.percentage(math.div(1, $seriesLength) * $i - math.div($duration, $totalDuration))} {
+      opacity: abs($i) % 2;
+    }
+    #{math.percentage(math.div(1, $seriesLength) * $i)} {
+      opacity: abs($i) % 2;
+    }
+  }
+  @for $i from 1 through $seriesSplitLength {
+    $item: $i * 2 - $index;
+    #{math.percentage(($i - 1) * math.div(1, $seriesSplitLength))} {
+      content: list.nth($series, $item);
+    }
+    #{math.percentage($i * math.div(1, $seriesSplitLength) - 0.000001)} {
+      content: list.nth($series, $item);
+    }
+  }
+}
+
+@keyframes items-odd {
+  @include keyframes(1);
+}
+
+@keyframes items-even {
+  @include keyframes(0);
+}
+
