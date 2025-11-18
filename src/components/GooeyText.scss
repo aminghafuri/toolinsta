@@ -43,14 +43,15 @@ $totalDuration: $itemDuration * $seriesLength;
   left: 50%;
   top: 25%;
   color: oklch(59.1% 0.293 322.896);
-  font-size: 350px;
-  font-weight: 900;
+  font-family: var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 300px;
+  font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
   filter: url(#gooey);
   transform: translate(-50%, -50%) scale(0.12);
   transform-origin: center center;
-  transition: color 200ms ease;
+  transition: color 1000ms ease;
   
   @media (min-width: 640px) {
     transform: translate(-50%, -50%) scale(0.16);
@@ -77,14 +78,14 @@ $totalDuration: $itemDuration * $seriesLength;
     animation-duration: #{$totalDuration}s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
-    filter: blur(3px);
+    filter: blur(9px);
   }
 
   &::before {
     content: list.nth($series, $seriesLength - 1);
     animation-name: items-odd;
   }
-
+ 
   &::after {
     content: list.nth($series, $seriesLength);
     animation-name: items-even;

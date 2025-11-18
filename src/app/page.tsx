@@ -162,9 +162,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-[#181e29] dark:via-[#312e81] dark:to-[#21223b] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_20%_25%,rgba(129,140,248,0.05)_0%,transparent_70%),radial-gradient(38%_52%_at_70%_80%,rgba(236,72,153,0.056)_0%,transparent_68%),radial-gradient(60%_55%_at_85%_17%,rgba(6,182,212,0.09)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
+    <div className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-black dark:via-[#0a0a0a] dark:to-[#111111] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.05)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.03)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.04)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
       {/* Header */}
-      <header className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-40">
+      <header className="border-b bg-white/80 dark:bg-black/80 dark:border-gray-800 backdrop-blur-sm sticky top-0 z-40">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between min-w-0">
             <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
@@ -201,14 +201,15 @@ export default function Home() {
           // Upload Section
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] py-12 sm:py-16">
             {/* Hero Section */}
-            <div className="text-center space-y-6 sm:space-y-8 mx-auto px-4">
+            <div className="text-center space-y-6 sm:space-y-8 mx-2 md:mx-auto">
               {/* Main Heading */}
               <div className="space-y-4">
-                <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-[1.5] font-[var(--font-roboto)]">
+                <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.5] font-[var(--font-roboto)]">
                   <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-cyan-400 dark:via-green-500 dark:to-amber-300 bg-clip-text text-transparent animate-gradient-x">
                   Instagram Tool That
                   <br />
-                  Will Show You 
+                  Will Show You
+                  <br />
                   </span>
                 </h2>
                   <GooeyText />
@@ -433,7 +434,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm mt-16">
+      <footer className="border-t bg-white/80 dark:bg-black/80 dark:border-gray-800 backdrop-blur-sm mt-16">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
           <div className="text-center text-muted-foreground">
             <p>Built with Next.js 15, Tailwind CSS v4, and TypeScript</p>
