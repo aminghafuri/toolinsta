@@ -5,7 +5,7 @@ import "./GooeyText.scss";
 
 const GooeyText: React.FC = () => {
   return (
-    <div className="relative w-full h-full min-h-[80px] sm:min-h-[120px] md:min-h-[160px] lg:min-h-[200px] flex items-center justify-center px-4">
+    <div className="relative w-full h-full min-h-[50px] sm:min-h-[70px] md:min-h-[100px] lg:min-h-[140px] flex items-center justify-center px-4">
       <div className="text"></div>
       
       {/* SVG GOOEY FILTER - Sharp corners for Roboto geometric look, minimal blur */}

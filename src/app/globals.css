@@ -47,7 +47,25 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  /* ... existing vars ... */
+  
+  /* Neon Animation Variables - Light Mode Defaults - Harsh/Vibrant */
+  --neon-bg-start: rgba(255, 255, 255, 0.95);
+  --neon-bg-end: rgba(255, 230, 240, 0.95);
+  --neon-border-start: rgba(219, 39, 119, 0.6); /* Pink-600 */
+  --neon-border-end: rgba(190, 24, 93, 1);    /* Pink-700 */
+  --neon-shadow-1-start: rgba(219, 39, 119, 0.4);
+  --neon-shadow-2-start: rgba(147, 51, 234, 0.3); /* Purple-600 */
+  --neon-shadow-1-end: rgba(219, 39, 119, 0.8);
+  --neon-shadow-2-end: rgba(147, 51, 234, 0.6);
+  
+  --neon-text-color-start: rgba(190, 24, 93, 1);   /* Pink-700 */
+  --neon-text-color-end: rgba(255, 0, 128, 1);     /* Sharp Magenta */
+  --neon-text-shadow-start: rgba(219, 39, 119, 0.5);
+  --neon-text-shadow-end: rgba(219, 39, 119, 0.9);
+  
   --card: oklch(1 0 0);
+
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -81,6 +99,22 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
+  
+  /* Neon Animation Variables - Dark Mode Overrides */
+  --neon-bg-start: rgba(15, 23, 42, 0.9);
+  --neon-bg-end: rgba(15, 23, 42, 0.8);
+  --neon-border-start: rgba(236, 72, 153, 0.4);
+  --neon-border-end: rgba(236, 72, 153, 1);
+  --neon-shadow-1-start: rgba(255, 0, 128, 0.3);
+  --neon-shadow-2-start: rgba(121, 40, 202, 0.2);
+  --neon-shadow-1-end: rgba(255, 0, 128, 0.6);
+  --neon-shadow-2-end: rgba(121, 40, 202, 0.4);
+  
+  --neon-text-color-start: rgba(249, 168, 212, 0.9);
+  --neon-text-color-end: rgba(236, 72, 153, 1);
+  --neon-text-shadow-start: rgb(189, 90, 139);
+  --neon-text-shadow-end: rgb(188, 90, 139);
+  
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -193,4 +227,36 @@
 .animate-gradient-x {
   background-size: 200% 200%;
   animation: gradient-x 4s ease-in-out infinite;
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--neon-shadow-1-start), 0 0 10px var(--neon-shadow-2-start);
+    background-color: var(--neon-bg-start);
+    border-color: var(--neon-border-start);
+  }
+  50% {
+    box-shadow: 0 0 15px var(--neon-shadow-1-end), 0 0 30px var(--neon-shadow-2-end);
+    background-color: var(--neon-bg-end);
+    border-color: var(--neon-border-end);
+  }
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+
+@keyframes neon-text-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px var(--neon-text-shadow-start));
+    color: var(--neon-text-color-start);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px var(--neon-text-shadow-end));
+    color: var(--neon-text-color-end);
+  }
+}
+
+.animate-neon-text-pulse {
+  animation: neon-text-pulse 3s ease-in-out infinite;
 }

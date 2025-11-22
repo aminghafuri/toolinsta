@@ -49,24 +49,24 @@ $totalDuration: $itemDuration * $seriesLength;
   line-height: 1.2;
   white-space: nowrap;
   filter: url(#gooey);
-  transform: translate(-50%, -50%) scale(0.12);
+  transform: translate(-50%, -50%) scale(0.16);
   transform-origin: center center;
   transition: color 1000ms ease;
   
   @media (min-width: 640px) {
-    transform: translate(-50%, -50%) scale(0.16);
-  }
-  
-  @media (min-width: 768px) {
     transform: translate(-50%, -50%) scale(0.20);
   }
   
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     transform: translate(-50%, -50%) scale(0.24);
   }
   
+  @media (min-width: 1024px) {
+    transform: translate(-50%, -50%) scale(0.29);
+  }
+  
   @media (min-width: 1280px) {
-    transform: translate(-50%, -50%) scale(0.28);
+    transform: translate(-50%, -50%) scale(0.29);
   }
       
   &::before, &::after {
@@ -78,7 +78,7 @@ $totalDuration: $itemDuration * $seriesLength;
     animation-duration: #{$totalDuration}s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
-    filter: blur(9px);
+    filter: blur(10px);
   }
 
   &::before {

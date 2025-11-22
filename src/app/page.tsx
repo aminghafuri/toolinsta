@@ -31,66 +31,66 @@ export default function Home() {
   useEffect(() => {
     try {
       const savedData = localStorage.getItem('instagramData')
-        if (savedData) {
-          const parsedData = JSON.parse(savedData)
-          // If it's a summary (has _isSummary flag), load essential connections data
-          if (parsedData._isSummary) {
-            // Load essential connections data first
-            const essentialConnections = loadEssentialConnectionsData()
-            if (essentialConnections) {
-              setEssentialData(essentialConnections)
-              // Set extracted data with essential data
-              setExtractedData({
-                userData: parsedData.userData,
-                followers: essentialConnections.followers || [],
-                following: essentialConnections.following || [],
-                blockedProfiles: essentialConnections.blockedProfiles || [],
-                pendingFollowRequests: essentialConnections.pendingFollowRequests || [],
-                recentFollowRequests: essentialConnections.recentFollowRequests || [],
-                recentlyUnfollowed: essentialConnections.recentlyUnfollowed || [],
-                removedSuggestions: essentialConnections.removedSuggestions || [],
-                unfollowers: essentialConnections.unfollowers || [],
-                locationsOfInterest: essentialConnections.locationsOfInterest || [],
-                personalInfo: essentialConnections.personalInfo || {},
-                profileChanges: essentialConnections.profileChanges || [],
-                recommendedTopics: essentialConnections.recommendedTopics || [],
-                files: [],
-                posts: [],
-                carousels: [],
-                stories: { ig_stories: [] },
-                totalMediaCount: 0,
-                extractionDate: parsedData.extractionDate,
-                _isSummary: true
-              })
-            } else {
-              // Fallback if no essential data
-              setExtractedData({
-                userData: parsedData.userData,
-                followers: [],
-                following: [],
-                blockedProfiles: [],
-                pendingFollowRequests: [],
-                recentFollowRequests: [],
-                recentlyUnfollowed: [],
-                removedSuggestions: [],
-                unfollowers: [],
-                locationsOfInterest: [],
-                personalInfo: {},
-                profileChanges: [],
-                recommendedTopics: [],
-                files: [],
-                posts: [],
-                carousels: [],
-                stories: { ig_stories: [] },
-                totalMediaCount: 0,
-                extractionDate: parsedData.extractionDate,
-                _isSummary: true
-              })
-            }
+      if (savedData) {
+        const parsedData = JSON.parse(savedData)
+        // If it's a summary (has _isSummary flag), load essential connections data
+        if (parsedData._isSummary) {
+          // Load essential connections data first
+          const essentialConnections = loadEssentialConnectionsData()
+          if (essentialConnections) {
+            setEssentialData(essentialConnections)
+            // Set extracted data with essential data
+            setExtractedData({
+              userData: parsedData.userData,
+              followers: essentialConnections.followers || [],
+              following: essentialConnections.following || [],
+              blockedProfiles: essentialConnections.blockedProfiles || [],
+              pendingFollowRequests: essentialConnections.pendingFollowRequests || [],
+              recentFollowRequests: essentialConnections.recentFollowRequests || [],
+              recentlyUnfollowed: essentialConnections.recentlyUnfollowed || [],
+              removedSuggestions: essentialConnections.removedSuggestions || [],
+              unfollowers: essentialConnections.unfollowers || [],
+              locationsOfInterest: essentialConnections.locationsOfInterest || [],
+              personalInfo: essentialConnections.personalInfo || {},
+              profileChanges: essentialConnections.profileChanges || [],
+              recommendedTopics: essentialConnections.recommendedTopics || [],
+              files: [],
+              posts: [],
+              carousels: [],
+              stories: { ig_stories: [] },
+              totalMediaCount: 0,
+              extractionDate: parsedData.extractionDate,
+              _isSummary: true
+            })
           } else {
-            setExtractedData(parsedData)
+            // Fallback if no essential data
+            setExtractedData({
+              userData: parsedData.userData,
+              followers: [],
+              following: [],
+              blockedProfiles: [],
+              pendingFollowRequests: [],
+              recentFollowRequests: [],
+              recentlyUnfollowed: [],
+              removedSuggestions: [],
+              unfollowers: [],
+              locationsOfInterest: [],
+              personalInfo: {},
+              profileChanges: [],
+              recommendedTopics: [],
+              files: [],
+              posts: [],
+              carousels: [],
+              stories: { ig_stories: [] },
+              totalMediaCount: 0,
+              extractionDate: parsedData.extractionDate,
+              _isSummary: true
+            })
           }
+        } else {
+          setExtractedData(parsedData)
         }
+      }
     } catch (error) {
       console.warn('Error loading saved data:', error)
     } finally {
@@ -100,13 +100,13 @@ export default function Home() {
 
   const handleDataExtracted = (data: ZipExtractionResult) => {
     setExtractedData(data)
-    
+
     // Clear warning closed states when new data is imported
     if (typeof window !== 'undefined') {
       localStorage.removeItem('instagram-warning-closed')
       localStorage.removeItem('instagram-info-closed')
     }
-    
+
     // Always save essential data (connections, personal info, profile changes, locations)
     try {
       const essentialData = extractEssentialConnectionsData(data)
@@ -115,7 +115,7 @@ export default function Home() {
     } catch (error) {
       console.warn('Could not save essential data:', error)
     }
-    
+
     // Try to store full data in localStorage (with error handling for large datasets)
     try {
       localStorage.setItem('instagramData', JSON.stringify(data))
@@ -173,7 +173,7 @@ export default function Home() {
                 Instagram Tool
               </h1>
             </div>
-            
+
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {extractedData && (
                 <>
@@ -199,23 +199,23 @@ export default function Home() {
       <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {!extractedData ? (
           // Upload Section
-          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] py-12 sm:py-16">
+          <div className="flex flex-col items-center justify-start sm:justify-center w-full sm:min-h-[calc(100vh-200px)] sm:py-16">
             {/* Hero Section */}
-            <div className="text-center space-y-6 sm:space-y-8 mx-2 md:mx-auto">
+            <div className="text-center space-y-6 sm:space-y-8 mx-2 md:mx-auto min-h-[calc(100vh-80px)] flex flex-col justify-center sm:min-h-fit sm:block sm:h-auto w-full">
               {/* Main Heading */}
-              <div className="space-y-4">
-                <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.5] font-[var(--font-roboto)]">
-                  <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-cyan-400 dark:via-green-500 dark:to-amber-300 bg-clip-text text-transparent animate-gradient-x">
-                  Instagram Tool That
-                  <br />
-                  Will Show You
-                  <br />
+              <div className="sm:space-y-4 lg:space-y-8">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.5] font-[var(--font-roboto)]">
+                  <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent animate-gradient-x">
+                    Drop Your Data
+                    <br />
+                    And Manage
+                    <br />
                   </span>
                 </h2>
-                  <GooeyText />
-                
+                <GooeyText />
+
                 <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light">
-                  Transform your Instagram data export into beautiful, organized insights. 
+                  Transform your Instagram data export into beautiful, organized insights.
                   <span className="block mt-2 text-base sm:text-lg">
                     Discover your connections, explore your content, and understand your digital footprint.
                   </span>
@@ -224,15 +224,13 @@ export default function Home() {
               {/* CTA Section */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <InstructionsModal>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    className="group w-full sm:w-auto px-8 py-6 text-base sm:text-lg border-2 hover:border-primary transition-all duration-300"
-                  >
-                    <Download className="h-5 w-5 mr-2 group-hover:animate-bounce" />
-                    How to Get Your Data
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <button className="relative inline-flex items-center justify-center rounded-full px-8 py-4 text-base sm:text-lg font-medium transition-all duration-300 animate-neon-pulse group focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-950 backdrop-blur-md">
+                    <Download className="h-5 w-5 mr-2 text-pink-600 dark:text-pink-400 group-hover:text-pink-700 dark:group-hover:text-white transition-colors group-hover:animate-bounce drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" />
+                    <span className="animate-neon-text-pulse transition-all">
+                      How to Get Your Data
+                    </span>
+                    {/* <ArrowRight className="h-4 w-4 ml-2 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-white transition-transform group-hover:translate-x-1 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]" /> */}
+                  </button>
                 </InstructionsModal>
               </div>
             </div>
@@ -242,7 +240,7 @@ export default function Home() {
               <div className="relative">
                 {/* Decorative gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 rounded-2xl blur-3xl -z-10" />
-                
+
                 {/* Upload Component */}
                 <div className="relative bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 sm:p-8 shadow-lg">
                   <div className="text-center mb-6">
@@ -301,7 +299,7 @@ export default function Home() {
               {/* Instagram Limitations Warning */}
               {extractedData && (
                 <>
-                  <InstagramLimitationsWarning 
+                  <InstagramLimitationsWarning
                     followersData={extractedData.followers}
                     followingData={extractedData.following}
                   />
@@ -351,10 +349,10 @@ export default function Home() {
                 <TabsContent value="info" className="space-y-6">
                   {/* Personal Information */}
                   {extractedData?.personalInfo && (
-                    <PersonalInfoDisplay 
+                    <PersonalInfoDisplay
                       personalInfo={extractedData.personalInfo}
-                      profilePhotoUrl={extractedData.personalInfo.profilePhotoUri ? 
-                        extractedData.files?.find(f => f.path.includes(extractedData.personalInfo.profilePhotoUri!))?.url : 
+                      profilePhotoUrl={extractedData.personalInfo.profilePhotoUri ?
+                        extractedData.files?.find(f => f.path.includes(extractedData.personalInfo.profilePhotoUri!))?.url :
                         undefined
                       }
                     />
@@ -403,9 +401,9 @@ export default function Home() {
                 <TabsContent value="posts" className="space-y-6">
                   {/* Posts Display */}
                   {extractedData?.posts && extractedData.posts.length > 0 ? (
-                    <PostsDisplay 
-                      posts={extractedData.posts} 
-                      files={extractedData.files} 
+                    <PostsDisplay
+                      posts={extractedData.posts}
+                      files={extractedData.files}
                     />
                   ) : (
                     <div className="text-center py-8">
@@ -417,9 +415,9 @@ export default function Home() {
                 <TabsContent value="stories" className="space-y-6">
                   {/* Stories Display */}
                   {extractedData?.stories && extractedData.stories.ig_stories && extractedData.stories.ig_stories.length > 0 ? (
-                    <StoriesDisplay 
-                      stories={extractedData.stories} 
-                      files={extractedData.files} 
+                    <StoriesDisplay
+                      stories={extractedData.stories}
+                      files={extractedData.files}
                     />
                   ) : (
                     <div className="text-center py-8">
@@ -445,4 +443,3 @@ export default function Home() {
     </div>
   )
 }
- 
