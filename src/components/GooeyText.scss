@@ -7,7 +7,7 @@
 
 $series: 'Unfollowers', 'Followers', 'Posts', 'Stories', 'Connections', 'Insights';
 
-$duration: 0.2;
+$duration: 0.4;
 
 $transition: 1.5;
 
@@ -78,7 +78,7 @@ $totalDuration: $itemDuration * $seriesLength;
     animation-duration: #{$totalDuration}s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
-    filter: blur(10px);
+    filter: blur(11px);
   }
 
   &::before {

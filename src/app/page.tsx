@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useLayoutEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import InstructionsModal from "@/components/InstructionsModal"
@@ -98,6 +98,30 @@ export default function Home() {
     }
   }, [])
 
+  const topRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLDivElement>(null)
+
+  // Robust scroll to top when data is loaded
+  useLayoutEffect(() => {
+    if (extractedData) {
+      // Immediate scroll
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+
+      // Scroll anchor into view as backup
+      topRef.current?.scrollIntoView({ behavior: "instant", block: "start" })
+
+      // Small timeout to handle any layout shifts after render
+      const timeoutId = setTimeout(() => {
+        window.scrollTo(0, 0)
+        topRef.current?.scrollIntoView({ behavior: "instant", block: "start" })
+      }, 10)
+
+      return () => clearTimeout(timeoutId)
+    }
+  }, [extractedData])
+
   const handleDataExtracted = (data: ZipExtractionResult) => {
     setExtractedData(data)
 
@@ -162,7 +186,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-black dark:via-[#0a0a0a] dark:to-[#111111] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.05)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.03)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.04)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
+    <div ref={mainRef} className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-black dark:via-[#0a0a0a] dark:to-[#111111] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.05)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.03)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.04)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
+      <div ref={topRef} className="absolute top-0 left-0 w-full h-px -z-50 opacity-0 pointer-events-none" />
       {/* Header */}
       <header className="border-b bg-white/80 dark:bg-black/80 dark:border-gray-800 backdrop-blur-sm sticky top-0 z-40">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
@@ -224,12 +249,11 @@ export default function Home() {
               {/* CTA Section */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <InstructionsModal>
-                  <button className="relative inline-flex items-center justify-center rounded-full px-8 py-4 text-base sm:text-lg font-medium transition-all duration-300 animate-neon-pulse group focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-950 backdrop-blur-md">
+                  <button className="relative cursor-pointer inline-flex items-center justify-center rounded-full px-8 py-4 text-base sm:text-lg font-medium transition-all duration-300 animate-neon-pulse group focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-950 backdrop-blur-md">
                     <Download className="h-5 w-5 mr-2 text-pink-600 dark:text-pink-400 group-hover:text-pink-700 dark:group-hover:text-white transition-colors group-hover:animate-bounce drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" />
                     <span className="animate-neon-text-pulse transition-all">
                       How to Get Your Data
                     </span>
-                    {/* <ArrowRight className="h-4 w-4 ml-2 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-white transition-transform group-hover:translate-x-1 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]" /> */}
                   </button>
                 </InstructionsModal>
               </div>
@@ -271,7 +295,7 @@ export default function Home() {
           </div>
         ) : (
           // Data Display Section with Tabs
-          <Tabs defaultValue="relationships" className="w-full">
+          <Tabs defaultValue="relationships" className="w-full animate-fade-in-up">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="relationships" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                 <Users className="h-3 w-3 sm:h-4 sm:w-4" />
