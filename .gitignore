@@ -26,6 +26,11 @@
 # production
 /build
 
+# PWA
+public/sw.js
+public/workbox-*.js
+public/worker-*.js
+
 # sample data
 /sample-data
 

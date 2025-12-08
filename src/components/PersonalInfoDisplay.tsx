@@ -3,10 +3,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
-import { 
-  User, 
-  Mail, 
-  Phone, 
+import {
+  User,
+  Mail,
+  Phone,
   Calendar,
   Eye,
   EyeOff
@@ -64,7 +64,7 @@ export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: P
     if (!gender) return 'Unknown';
     return gender.charAt(0).toUpperCase() + gender.slice(1);
   };
-  
+
   // Helper function to decode emoji/unicode characters
   const decodeEmoji = (encodedString?: string) => {
     if (!encodedString || typeof encodedString !== 'string') {
@@ -76,7 +76,7 @@ export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: P
         const charCode = parseInt(code, 16);
         return String.fromCharCode(charCode);
       });
-      
+
       // Then use the escape() + decodeURIComponent() trick
       return decodeURIComponent(escape(unicodeDecoded));
     } catch (error) {
@@ -103,9 +103,9 @@ export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: P
           {profilePhotoUrl && (
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-                <Image 
-                  src={profilePhotoUrl} 
-                  alt="Profile Photo" 
+                <Image
+                  src={profilePhotoUrl}
+                  alt="Profile Photo"
                   width={80}
                   height={80}
                   className="w-full h-full object-cover"

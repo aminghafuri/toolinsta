@@ -23,6 +23,28 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "ToolInsta - Instagram Data Analyzer",
   description: "Analyze your Instagram data export with privacy-focused tools",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico?v=2",
+    shortcut: "/favicon.ico?v=2",
+    apple: "/icons/icon-192x192.png?v=2",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/icons/icon-192x192.png?v=2",
+    },
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ToolInsta",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
