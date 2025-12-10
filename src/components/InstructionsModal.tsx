@@ -90,7 +90,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl h-[90vh] flex flex-col">
+      <DialogContent className="max-w-2xl h-[70vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <HelpCircle className="h-6 w-6" />
@@ -100,10 +100,10 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
             Follow these steps to download your Instagram data and upload it to this tool.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex-1 overflow-y-auto space-y-6">
           {/* Current Step Card */}
-          <Card className="min-h-[400px]">
+          <Card className="min-h-[40vh]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {currentStepData?.icon}
@@ -124,44 +124,7 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
             </CardContent>
           </Card>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center flex-shrink-0">
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className="flex items-center gap-2"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Previous
-            </Button>
-            
-            {/* Step Indicator */}
-          <div className="flex justify-center space-x-2">
-            {steps.map((step) => (
-              <button
-                key={step.id}
-                onClick={() => handleStepClick(step.id)}
-                className={`w-8 h-8 rounded-full text-sm font-medium transition-all duration-200 ${
-                  step.id === currentStep
-                    ? "bg-primary text-primary-foreground scale-110"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                {step.id}
-              </button>
-            ))}
-          </div>
-            
-            <Button
-              onClick={handleNext}
-              disabled={currentStep === steps.length}
-              className="flex items-center gap-2"
-            >
-              Next
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+
 
           {/* Important Notes - Only show on last step */}
           {currentStep === steps.length && (
@@ -181,6 +144,45 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
             </div>
           )}
         </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center flex-shrink-0 gap-2 mt-4 pt-2 border-t">
+          <Button
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+            className="flex items-center gap-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Previous</span>
+          </Button>
+
+          {/* Step Indicator */}
+          <div className="flex justify-center space-x-1 sm:space-x-2">
+            {steps.map((step) => (
+              <button
+                key={step.id}
+                onClick={() => handleStepClick(step.id)}
+                className={`w-8 h-8 rounded-full text-sm font-medium transition-all duration-200 flex items-center justify-center ${step.id === currentStep
+                  ? "bg-primary text-primary-foreground scale-110"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+              >
+                {step.id}
+              </button>
+            ))}
+          </div>
+
+          <Button
+            onClick={handleNext}
+            disabled={currentStep === steps.length}
+            className="flex items-center gap-2"
+          >
+            <span className="hidden sm:inline">Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+
       </DialogContent>
     </Dialog>
   )
