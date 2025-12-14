@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { CacheBuster } from "@/components/CacheBuster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,6 +67,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <CacheBuster />
           <InstallPrompt />
           <Toaster />
         </ThemeProvider>

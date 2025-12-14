@@ -28,6 +28,7 @@
 
 # PWA
 public/sw.js
+public/swe-*.js
 public/workbox-*.js
 public/worker-*.js
 
