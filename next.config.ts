@@ -15,6 +15,17 @@ const withPWA = require("@ducanh2912/next-pwa").default({
     clientsClaim: true,
     runtimeCaching: [
       {
+        urlPattern: ({ request }: { request: Request }) => request.mode === "navigate",
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "pages",
+          expiration: {
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+          },
+        },
+      },
+      {
         urlPattern: /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
         handler: "CacheFirst",
         options: {
