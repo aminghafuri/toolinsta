@@ -186,10 +186,14 @@ export default function Home() {
   }
 
   return (
-    <div ref={mainRef} className="min-h-screen flex flex-col bg-gradient-to-bl from-[#f9fafb] via-[#e0e7ff] to-[#fdf2f8] dark:from-black dark:via-[#0a0a0a] dark:to-[#111111] relative overflow-x-hidden before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.13)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.08)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.09)_0%,transparent_75%)] dark:before:bg-[radial-gradient(60%_70%_at_25%_30%,rgba(99,102,241,0.05)_0%,transparent_70%),radial-gradient(40%_50%_at_80%_80%,rgba(217,70,239,0.03)_0%,transparent_65%),radial-gradient(50%_60%_at_80%_15%,rgba(16,185,129,0.04)_0%,transparent_75%)] before:blur-[44px] before:opacity-90">
+    <div ref={mainRef} className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fafc] via-[#e0e7ff] to-[#fce7f3] dark:bg-gradient-to-br dark:from-[#000000] dark:via-[#050508] dark:to-[#030308] relative overflow-x-hidden">
+      {/* Subtle gradient overlay for visual depth */}
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_20%_20%,rgba(147,51,234,0.12),rgba(147,51,234,0))] dark:bg-[radial-gradient(ellipse_80%_50%_at_20%_20%,rgba(99,102,241,0.07),rgba(99,102,241,0))]" />
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_80%_70%,rgba(236,72,153,0.1),rgba(236,72,153,0))] dark:bg-[radial-gradient(ellipse_60%_40%_at_80%_70%,rgba(168,85,247,0.05),rgba(168,85,247,0))]" />
+      <div className="fixed inset-0 -z-10 hidden dark:block bg-[radial-gradient(ellipse_50%_30%_at_50%_100%,rgba(236,72,153,0.04),rgba(236,72,153,0))]" />
       <div ref={topRef} className="absolute top-0 left-0 w-full h-px -z-50 opacity-0 pointer-events-none" />
       {/* Header */}
-      <header className="border-b bg-white/80 dark:bg-black/80 dark:border-gray-800 backdrop-blur-sm sticky top-0 z-40">
+      <header className="border-b bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(0,0,0,0.8)] dark:border-[#1f1f1f] backdrop-blur-sm sticky top-0 z-40">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between min-w-0">
             <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
@@ -456,7 +460,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white/80 dark:bg-black/80 dark:border-gray-800 backdrop-blur-sm mt-16">
+      <footer className="border-t bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(0,0,0,0.8)] dark:border-[#1f1f1f] backdrop-blur-sm mt-16">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
           <div className="text-center text-muted-foreground">
             <p>Built with Next.js 15, Tailwind CSS v4, and TypeScript</p>
