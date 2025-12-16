@@ -188,9 +188,6 @@ export default function Home() {
   return (
     <div ref={mainRef} className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fafc] via-[#e0e7ff] to-[#fce7f3] dark:bg-gradient-to-br dark:from-[#000000] dark:via-[#050508] dark:to-[#030308] relative overflow-x-hidden">
       {/* Subtle gradient overlay for visual depth */}
-      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_20%_20%,rgba(147,51,234,0.12),rgba(147,51,234,0))] dark:bg-[radial-gradient(ellipse_80%_50%_at_20%_20%,rgba(99,102,241,0.07),rgba(99,102,241,0))]" />
-      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_80%_70%,rgba(236,72,153,0.1),rgba(236,72,153,0))] dark:bg-[radial-gradient(ellipse_60%_40%_at_80%_70%,rgba(168,85,247,0.05),rgba(168,85,247,0))]" />
-      <div className="fixed inset-0 -z-10 hidden dark:block bg-[radial-gradient(ellipse_50%_30%_at_50%_100%,rgba(236,72,153,0.04),rgba(236,72,153,0))]" />
       <div ref={topRef} className="absolute top-0 left-0 w-full h-px -z-50 opacity-0 pointer-events-none" />
       {/* Header */}
       <header className="border-b bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(0,0,0,0.8)] dark:border-[#1f1f1f] backdrop-blur-sm sticky top-0 z-40">
