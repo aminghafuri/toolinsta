@@ -36,7 +36,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
               <User className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
-          
+
           <div className="space-y-2">
             <CardTitle className="text-2xl">@{user.username}</CardTitle>
             {user.bio && (
@@ -47,7 +47,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 text-center">
@@ -58,7 +58,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
             </div>
             <p className="text-sm text-muted-foreground">Followers</p>
           </div>
-          
+
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-1">
               <Heart className="h-4 w-4 text-muted-foreground" />
@@ -66,7 +66,7 @@ const UserProfile = ({ user }: UserProfileProps) => {
             </div>
             <p className="text-sm text-muted-foreground">Following</p>
           </div>
-          
+
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-1">
               <Camera className="h-4 w-4 text-muted-foreground" />

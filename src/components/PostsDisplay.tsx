@@ -4,16 +4,19 @@ import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import EmptyState from "@/components/EmptyState"
 import { InstagramPost, ExtractedFile } from "@/types/instagram"
-import { Play, ChevronLeft, ChevronRight, X, Share2 } from "lucide-react"
+import { Play, ChevronLeft, ChevronRight, X, Share2, Instagram } from "lucide-react"
 import { shareMedia } from "@/lib/shareUtils"
 
 interface PostsDisplayProps {
   posts: InstagramPost[]
   files: ExtractedFile[]
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean
 }
 
-export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
+export default function PostsDisplay({ posts, files, isSummary = false }: PostsDisplayProps) {
   const [selectedPost, setSelectedPost] = useState<number | null>(null)
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -33,22 +36,22 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
   const formatDate = (timestamp: number): string => {
     // Debug logging to understand timestamp values
     console.log('Formatting timestamp:', timestamp, 'Type:', typeof timestamp)
-    
+
     // Handle invalid or zero timestamps
     if (!timestamp || timestamp === 0 || isNaN(timestamp)) {
       console.warn('Invalid or zero timestamp:', timestamp)
       return 'Date not available'
     }
-    
+
     // Handle both Unix timestamp (seconds) and milliseconds
     const date = new Date(timestamp > 1000000000000 ? timestamp : timestamp * 1000)
-    
+
     // Check if date is valid
     if (isNaN(date.getTime())) {
       console.warn('Invalid timestamp:', timestamp)
       return 'Invalid Date'
     }
-    
+
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -69,7 +72,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
         const charCode = parseInt(code, 16);
         return String.fromCharCode(charCode);
       });
-      
+
       // Then use the escape() + decodeURIComponent() trick
       return decodeURIComponent(escape(unicodeDecoded));
     } catch (error) {
@@ -114,7 +117,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
   const nextMedia = () => {
     if (selectedPost !== null && posts[selectedPost]) {
       const post = posts[selectedPost]
-      setCurrentMediaIndex((prev) => 
+      setCurrentMediaIndex((prev) =>
         prev < post.media.length - 1 ? prev + 1 : 0
       )
     }
@@ -123,7 +126,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
   const prevMedia = () => {
     if (selectedPost !== null && posts[selectedPost]) {
       const post = posts[selectedPost]
-      setCurrentMediaIndex((prev) => 
+      setCurrentMediaIndex((prev) =>
         prev > 0 ? prev - 1 : post.media.length - 1
       )
     }
@@ -139,7 +142,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
     const media = post.media[mediaIndex]
     const mediaType = getMediaType(media)
     const fileUrl = getFileUrl(media.uri)
-    
+
     if (!fileUrl) {
       console.error('No file URL available for sharing')
       return
@@ -147,10 +150,10 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
 
     const title = post.title || (media.title) || `Instagram ${mediaType}`
     const text = `Check out this ${mediaType} from my Instagram archive`
-    
+
     // Convert 'photo' to 'image' for the shareMedia function
     const shareMediaType = mediaType === 'photo' ? 'image' : 'video'
-    
+
     try {
       await shareMedia(fileUrl, shareMediaType, title, text)
     } catch (error) {
@@ -160,9 +163,11 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
 
   if (!posts || posts.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No posts found</p>
-      </div>
+      <EmptyState
+        title="No Posts"
+        icon={Instagram}
+        isSummary={isSummary}
+      />
     )
   }
 
@@ -197,7 +202,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                   className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               )}
-              
+
               {/* Carousel indicator for multiple media */}
               {post.media.length > 1 && (
                 <div className="absolute top-2 left-2">
@@ -207,7 +212,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                   </div>
                 </div>
               )}
-              
+
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-4 text-white">
@@ -224,59 +229,59 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
 
       {/* Modal for full post view */}
       {isModalOpen && selectedPost !== null && mounted && createPortal(
-        <div 
+        <div
           className="fixed top-0 left-0 w-full h-full bg-black/70 backdrop-blur-lg z-[9999] flex items-center justify-center p-4"
-          style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            width: '100vw', 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
             height: '100vh',
             margin: 0,
             padding: '1rem'
           }}
           onClick={handleBackdropClick}
         >
-          <div 
+          <div
             className="bg-white/10 backdrop-blur-md rounded-lg max-w-7xl max-h-[95vh] overflow-y-auto relative border border-white/20"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button - positioned on top of image */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
               onClick={closeModal}
             >
               <X className="w-4 h-4" />
             </Button>
-            
+
             {(() => {
               const post = posts[selectedPost]
               // Debug logging for post structure
               console.log('Post structure:', post)
               console.log('Post title:', post.title)
               console.log('Post creation_timestamp:', post.creation_timestamp)
-              
+
               // Fallback to media-level data if post-level data is missing
               const postTitle = post.title || (post.media[0]?.title) || ''
               const postTimestamp = post.creation_timestamp || (post.media[0]?.creation_timestamp) || 0
-              
+
               console.log('Using title:', postTitle)
               console.log('Using timestamp:', postTimestamp)
-              
+
               return (
                 <div className="relative">
                   {/* Share Button - positioned on top of image */}
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="absolute top-4 right-16 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
                     onClick={() => handleShare(post, currentMediaIndex)}
                   >
                     <Share2 className="w-4 h-4" />
                   </Button>
-                  
+
                   {/* Post Media */}
                   <div className="relative">
                     {post.media.length === 1 ? (
@@ -316,7 +321,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                             className="w-full h-auto max-h-[80vh] object-contain rounded"
                           />
                         )}
-                        
+
                         {/* Carousel Navigation */}
                         {post.media.length > 1 && (
                           <>
@@ -336,15 +341,14 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                             >
                               <ChevronRight className="w-4 h-4" />
                             </Button>
-                            
+
                             {/* Carousel indicators */}
                             <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
                               {post.media.map((_, mediaIndex) => (
                                 <button
                                   key={mediaIndex}
-                                  className={`w-2 h-2 rounded-full transition-colors ${
-                                    mediaIndex === currentMediaIndex ? 'bg-white' : 'bg-white/50'
-                                  }`}
+                                  className={`w-2 h-2 rounded-full transition-colors ${mediaIndex === currentMediaIndex ? 'bg-white' : 'bg-white/50'
+                                    }`}
                                   onClick={() => setCurrentMediaIndex(mediaIndex)}
                                 />
                               ))}
@@ -354,7 +358,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                       </div>
                     )}
                   </div>
-                
+
                   {/* Post Title and Date - positioned under the image */}
                   <div className="p-4 bg-white/5 backdrop-blur-sm">
                     {/* Post Title */}
@@ -363,7 +367,7 @@ export default function PostsDisplay({ posts, files }: PostsDisplayProps) {
                         <p className="text-white text-sm leading-relaxed">{decodeEmoji(postTitle)}</p>
                       </div>
                     )}
-                    
+
                     {/* Post Date - use fallback timestamp */}
                     <div className="text-white/70 text-xs">
                       {formatDate(postTimestamp)}

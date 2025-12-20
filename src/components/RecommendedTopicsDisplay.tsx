@@ -5,29 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import EmptyState from '@/components/EmptyState';
 import { Hash, Sparkles, Tag, ChevronDown, Info, RefreshCw, Search, Users, Heart, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface RecommendedTopicsDisplayProps {
   recommendedTopics: RecommendedTopic[];
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean;
 }
 
-export default function RecommendedTopicsDisplay({ recommendedTopics }: RecommendedTopicsDisplayProps) {
+export default function RecommendedTopicsDisplay({ recommendedTopics, isSummary = false }: RecommendedTopicsDisplayProps) {
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
 
   if (!recommendedTopics || recommendedTopics.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            Recommended Topics
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No recommended topics found.</p>
-        </CardContent>
-      </Card>
+      <EmptyState
+        title="No Recommended Topics"
+        icon={Sparkles}
+        isSummary={isSummary}
+      />
     );
   }
 

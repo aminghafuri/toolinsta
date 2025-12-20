@@ -3,10 +3,13 @@
 import { ProfileChange } from '@/types/instagram';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Hash, Phone, FileText } from 'lucide-react';
+import EmptyState from '@/components/EmptyState';
+import { User, Hash, Phone, FileText, History } from 'lucide-react';
 
 interface ProfileChangesDisplayProps {
   profileChanges: ProfileChange[];
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean;
 }
 
 const getChangeTypeIcon = (changeType: string) => {
@@ -41,7 +44,7 @@ const getChangeTypeColor = (changeType: string) => {
 
 const formatTimestamp = (timestamp: number): string => {
   if (timestamp === 0) return 'Unknown date';
-  
+
   const date = new Date(timestamp * 1000);
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -62,7 +65,7 @@ const decodeEmoji = (encodedString?: string) => {
       const charCode = parseInt(code, 16);
       return String.fromCharCode(charCode);
     });
-    
+
     // Then use the escape() + decodeURIComponent() trick
     return decodeURIComponent(escape(unicodeDecoded));
   } catch (error) {
@@ -72,20 +75,14 @@ const decodeEmoji = (encodedString?: string) => {
   }
 };
 
-export default function ProfileChangesDisplay({ profileChanges }: ProfileChangesDisplayProps) {
+export default function ProfileChangesDisplay({ profileChanges, isSummary = false }: ProfileChangesDisplayProps) {
   if (!profileChanges || profileChanges.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Profile Changes
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No profile changes found.</p>
-        </CardContent>
-      </Card>
+      <EmptyState
+        title="No Profile Changes"
+        icon={History}
+        isSummary={isSummary}
+      />
     );
   }
 
@@ -157,7 +154,7 @@ export default function ProfileChangesDisplay({ profileChanges }: ProfileChanges
                 const previousValue = change.string_map_data['Previous Value'].value;
                 const newValue = change.string_map_data['New Value'].value;
                 const changeDate = change.string_map_data['Change Date'].timestamp;
-                
+
                 return (
                   <div
                     key={index}
@@ -173,7 +170,7 @@ export default function ProfileChangesDisplay({ profileChanges }: ProfileChanges
                         {formatTimestamp(changeDate)}
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       {previousValue && (
                         <div className="space-y-1">
@@ -185,7 +182,7 @@ export default function ProfileChangesDisplay({ profileChanges }: ProfileChanges
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="space-y-1">
                         <span className="text-sm font-medium text-muted-foreground">
                           To:

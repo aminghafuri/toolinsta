@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
+import EmptyState from '@/components/EmptyState'
 import {
   User,
   Mail,
@@ -27,9 +28,11 @@ interface PersonalInfoDisplayProps {
     profilePhotoUri?: string;
   };
   profilePhotoUrl?: string;
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean;
 }
 
-export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: PersonalInfoDisplayProps) {
+export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl, isSummary = false }: PersonalInfoDisplayProps) {
   const {
     email,
     phoneNumber,
@@ -44,7 +47,13 @@ export default function PersonalInfoDisplay({ personalInfo, profilePhotoUrl }: P
   } = personalInfo;
 
   if (!email && !phoneNumber && !username && !name) {
-    return null;
+    return (
+      <EmptyState
+        title="No Personal Information"
+        icon={User}
+        isSummary={isSummary}
+      />
+    );
   }
 
   const formatDate = (dateString?: string) => {

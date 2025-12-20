@@ -5,16 +5,19 @@ import { createPortal } from "react-dom"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import EmptyState from "@/components/EmptyState"
 import { InstagramStory, ExtractedFile } from "@/types/instagram"
-import { Play, X, Calendar, Share2 } from "lucide-react"
+import { Play, X, Calendar, Share2, History } from "lucide-react"
 import { shareMedia } from "@/lib/shareUtils"
 
 interface StoriesDisplayProps {
   stories: InstagramStory
   files: ExtractedFile[]
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean
 }
 
-export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) {
+export default function StoriesDisplay({ stories, files, isSummary = false }: StoriesDisplayProps) {
   const [selectedStory, setSelectedStory] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -27,19 +30,19 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   const getFileUrl = (uri: string): string | null => {
     // First try exact path match
     let file = files.find(f => f.path === uri)
-    
+
     // If not found, try partial match (for cases where path might be slightly different)
     if (!file) {
       const uriParts = uri.split('/')
       const fileName = uriParts[uriParts.length - 1]
       file = files.find(f => f.name === fileName)
     }
-    
+
     // If still not found, try more flexible matching
     if (!file) {
       file = files.find(f => f.path.includes(uri) || uri.includes(f.name))
     }
-    
+
     return file?.url || null
   }
 
@@ -55,8 +58,8 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   }
 
   // Enhanced media type detection using multiple methods
-  const getMediaType = (media: { 
-    media_metadata: { 
+  const getMediaType = (media: {
+    media_metadata: {
       video_metadata?: unknown
       photo_metadata?: unknown
     }
@@ -69,18 +72,18 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
     if (media.media_metadata.photo_metadata) {
       return 'photo'
     }
-    
+
     // Method 2: Check file extension as fallback
     const uriParts = media.uri.split('.')
     const extension = uriParts[uriParts.length - 1]?.toLowerCase()
-    
+
     if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(extension || '')) {
       return 'video'
     }
     if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension || '')) {
       return 'photo'
     }
-    
+
     // Method 3: Check if we can find the file and determine its type
     const file = files.find(f => f.path.includes(media.uri) || media.uri.includes(f.name))
     if (file?.type === 'video') {
@@ -89,7 +92,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
     if (file?.type === 'image') {
       return 'photo'
     }
-    
+
     // Default to photo if uncertain
     console.warn('Could not determine media type for:', media.uri)
     return 'photo'
@@ -106,7 +109,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
         const charCode = parseInt(code, 16);
         return String.fromCharCode(charCode);
       });
-      
+
       // Then use the escape() + decodeURIComponent() trick
       return decodeURIComponent(escape(unicodeDecoded));
     } catch (error) {
@@ -120,7 +123,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   const handleShare = async (story: typeof stories.ig_stories[0]) => {
     const mediaType = getMediaType(story)
     const fileUrl = getFileUrl(story.uri)
-    
+
     if (!fileUrl) {
       console.error('No file URL available for sharing')
       return
@@ -128,10 +131,10 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
 
     const title = story.title || `Instagram story`
     const text = `Check out this story from my Instagram archive`
-    
+
     // Convert 'photo' to 'image' for the shareMedia function
     const shareMediaType = mediaType === 'photo' ? 'image' : 'video'
-    
+
     try {
       await shareMedia(fileUrl, shareMediaType, title, text)
     } catch (error) {
@@ -172,7 +175,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
   // Group stories by date
   const groupStoriesByDate = () => {
     const grouped: { [key: string]: Array<{ originalIndex: number } & typeof stories.ig_stories[0]> } = {}
-    
+
     stories.ig_stories.forEach((story, index) => {
       const date = new Date(story.creation_timestamp * 1000).toDateString()
       if (!grouped[date]) {
@@ -188,9 +191,11 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
 
   if (!stories?.ig_stories || stories.ig_stories.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No stories found</p>
-      </div>
+      <EmptyState
+        title="No Stories"
+        icon={History}
+        isSummary={isSummary}
+      />
     )
   }
 
@@ -223,12 +228,12 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                   {(() => {
                     const mediaType = getMediaType(story)
                     const fileUrl = getFileUrl(story.uri)
-                    
+
                     // Debug logging for troubleshooting
                     if (!fileUrl) {
                       console.warn('No file URL found for story:', story.uri)
                     }
-                    
+
                     if (mediaType === 'video') {
                       return (
                         <div className="relative w-full h-full">
@@ -287,7 +292,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                       )
                     }
                   })()}
-                  
+
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-4 text-white">
@@ -306,43 +311,43 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
 
       {/* Modal for full story view */}
       {isModalOpen && selectedStory !== null && mounted && createPortal(
-        <div 
+        <div
           className="fixed top-0 left-0 w-full h-full bg-black/70 backdrop-blur-lg z-[9999] flex items-center justify-center p-4"
-          style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            width: '100vw', 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
             height: '100vh',
             margin: 0,
             padding: '1rem'
           }}
           onClick={handleBackdropClick}
         >
-          <div 
+          <div
             className="bg-white/10 backdrop-blur-md rounded-lg max-w-7xl max-h-[95vh] overflow-y-auto relative border border-white/20"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button - positioned on top of image */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
               onClick={closeModal}
             >
               <X className="w-4 h-4" />
             </Button>
-            
+
             {/* Share Button - positioned on top of image */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="absolute top-4 right-16 z-10 bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
               onClick={() => handleShare(stories.ig_stories[selectedStory])}
             >
               <Share2 className="w-4 h-4" />
             </Button>
-            
+
             {(() => {
               const story = stories.ig_stories[selectedStory]
               return (
@@ -352,7 +357,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                     {(() => {
                       const mediaType = getMediaType(story)
                       const fileUrl = getFileUrl(story.uri)
-                      
+
                       if (mediaType === 'video') {
                         return (
                           <video
@@ -381,7 +386,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                       }
                     })()}
                   </div>
-                
+
                   {/* Story Title and Date - positioned under the image */}
                   <div className="p-4 bg-white/5 backdrop-blur-sm">
                     {/* Story Title */}
@@ -390,7 +395,7 @@ export default function StoriesDisplay({ stories, files }: StoriesDisplayProps) 
                         <p className="text-white text-sm leading-relaxed">{decodeEmoji(story.title)}</p>
                       </div>
                     )}
-                    
+
                     {/* Story Date */}
                     <div className="text-white/70 text-xs">
                       {formatDate(story.creation_timestamp)}

@@ -2,15 +2,24 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import EmptyState from '@/components/EmptyState'
 import { MapPin } from 'lucide-react'
 
 interface LocationsOfInterestProps {
   locations: string[]
+  /** Whether the data is from a summary (after page refresh) */
+  isSummary?: boolean
 }
 
-export default function LocationsOfInterest({ locations }: LocationsOfInterestProps) {
+export default function LocationsOfInterest({ locations, isSummary = false }: LocationsOfInterestProps) {
   if (!locations || locations.length === 0) {
-    return null
+    return (
+      <EmptyState
+        title="No Locations of Interest"
+        icon={MapPin}
+        isSummary={isSummary}
+      />
+    )
   }
 
   return (

@@ -306,7 +306,7 @@ export default function Home() {
 
             <TabsContent value="relationships" className="space-y-6">
               {/* User Profile */}
-              {extractedData.userData && (
+              {extractedData?.userData && (
                 <UserProfile user={extractedData.userData} />
               )}
 
@@ -362,36 +362,38 @@ export default function Home() {
 
                 <TabsContent value="info" className="space-y-6">
                   {/* Personal Information */}
-                  {extractedData?.personalInfo && (
-                    <PersonalInfoDisplay
-                      personalInfo={extractedData.personalInfo}
-                      profilePhotoUrl={extractedData.personalInfo.profilePhotoUri ?
-                        extractedData.files?.find(f => f.path.includes(extractedData.personalInfo.profilePhotoUri!))?.url :
-                        undefined
-                      }
-                    />
-                  )}
+                  <PersonalInfoDisplay
+                    personalInfo={extractedData?.personalInfo || {}}
+                    profilePhotoUrl={extractedData?.personalInfo?.profilePhotoUri ?
+                      extractedData.files?.find(f => f.path.includes(extractedData.personalInfo.profilePhotoUri!))?.url :
+                      undefined
+                    }
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
 
                 <TabsContent value="locations" className="space-y-6">
                   {/* Locations of Interest */}
-                  {extractedData?.locationsOfInterest && extractedData.locationsOfInterest.length > 0 && (
-                    <LocationsOfInterest locations={extractedData.locationsOfInterest} />
-                  )}
+                  <LocationsOfInterest
+                    locations={extractedData?.locationsOfInterest || []}
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
 
                 <TabsContent value="changes" className="space-y-6">
                   {/* Profile Changes */}
-                  {extractedData?.profileChanges && extractedData.profileChanges.length > 0 && (
-                    <ProfileChangesDisplay profileChanges={extractedData.profileChanges} />
-                  )}
+                  <ProfileChangesDisplay
+                    profileChanges={extractedData?.profileChanges || []}
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
 
                 <TabsContent value="topics" className="space-y-6">
                   {/* Recommended Topics */}
-                  {extractedData?.recommendedTopics && extractedData.recommendedTopics.length > 0 && (
-                    <RecommendedTopicsDisplay recommendedTopics={extractedData.recommendedTopics} />
-                  )}
+                  <RecommendedTopicsDisplay
+                    recommendedTopics={extractedData?.recommendedTopics || []}
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
               </Tabs>
             </TabsContent>
@@ -414,30 +416,20 @@ export default function Home() {
 
                 <TabsContent value="posts" className="space-y-6">
                   {/* Posts Display */}
-                  {extractedData?.posts && extractedData.posts.length > 0 ? (
-                    <PostsDisplay
-                      posts={extractedData.posts}
-                      files={extractedData.files}
-                    />
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-muted-foreground">No posts found</p>
-                    </div>
-                  )}
+                  <PostsDisplay
+                    posts={extractedData?.posts || []}
+                    files={extractedData?.files || []}
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
 
                 <TabsContent value="stories" className="space-y-6">
                   {/* Stories Display */}
-                  {extractedData?.stories && extractedData.stories.ig_stories && extractedData.stories.ig_stories.length > 0 ? (
-                    <StoriesDisplay
-                      stories={extractedData.stories}
-                      files={extractedData.files}
-                    />
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-muted-foreground">No stories found</p>
-                    </div>
-                  )}
+                  <StoriesDisplay
+                    stories={extractedData?.stories || { ig_stories: [] }}
+                    files={extractedData?.files || []}
+                    isSummary={!!extractedData?._isSummary}
+                  />
                 </TabsContent>
               </Tabs>
             </TabsContent>
