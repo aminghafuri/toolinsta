@@ -5,25 +5,25 @@ import { findUnfollowers } from '@/lib/unfollowers';
 // Enhanced utility function to determine file type based on extension
 function getFileType(filename: string): 'json' | 'image' | 'video' | 'other' {
   const ext = filename.toLowerCase().split('.').pop();
-  
+
   if (ext === 'json') return 'json';
-  
+
   // Image formats (including more comprehensive list)
   if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'svg'].includes(ext || '')) {
     return 'image';
   }
-  
+
   // Video formats (including more comprehensive list)
   if (['mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv', 'm4v', '3gp', 'ogv'].includes(ext || '')) {
     return 'video';
   }
-  
+
   // For files without extensions, try to infer from path
   if (filename.includes('media/stories/') || filename.includes('media/posts/')) {
     // If it's in a media folder but no extension, default to image
     return 'image';
   }
-  
+
   return 'other';
 }
 
@@ -84,11 +84,11 @@ function parseInstagramData(files: ExtractedFile[]): {
   const stories: InstagramStory = { ig_stories: [] };
 
   // Find and parse user information from personal_information folder
-  const userFiles = files.filter(f => 
-    f.path.includes('personal_information/') && 
+  const userFiles = files.filter(f =>
+    f.path.includes('personal_information/') &&
     (f.name === 'instagram_profile_information.json' || f.name === 'personal_information.json')
   );
-  
+
   for (const userFile of userFiles) {
     if (userFile?.content) {
       try {
@@ -112,7 +112,7 @@ function parseInstagramData(files: ExtractedFile[]): {
 
   // Parse followers data
   const followersFile = files.find(f => f.path.includes('connections/followers_and_following/followers_1.json'));
-  
+
   if (followersFile?.content) {
     try {
       const followersData = followersFile.content as Record<string, unknown>[];
@@ -139,23 +139,23 @@ function parseInstagramData(files: ExtractedFile[]): {
       console.warn('Error parsing followers data:', error);
     }
   }
-  
+
 
   // Parse following data
   const followingFile = files.find(f => f.path.includes('connections/followers_and_following/following.json'));
-  
+
   if (followingFile?.content) {
     try {
       const followingData = followingFile.content as Record<string, unknown>;
-      
+
       // Handle the relationships_following structure
       const relationshipsFollowing = followingData.relationships_following as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsFollowing)) {
         relationshipsFollowing.forEach((followed: unknown) => {
           const typedFollowed = followed as Record<string, unknown>;
           const stringListData = typedFollowed.string_list_data as Record<string, unknown>[];
-          
+
           if (Array.isArray(stringListData)) {
             // Handle new structure: username is in title field, no value field
             if (typedFollowed.title && typeof typedFollowed.title === 'string' && typedFollowed.title.trim() !== '') {
@@ -189,14 +189,14 @@ function parseInstagramData(files: ExtractedFile[]): {
       console.warn('Error parsing following data:', error);
     }
   }
-  
+
   // Parse blocked profiles
   const blockedFile = files.find(f => f.path.includes('connections/followers_and_following/blocked_profiles.json'));
   if (blockedFile?.content) {
     try {
       const blockedData = blockedFile.content as Record<string, unknown>;
       const relationshipsBlocked = blockedData.relationships_blocked_users as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsBlocked)) {
         relationshipsBlocked.forEach((blocked: unknown) => {
           const typedBlocked = blocked as Record<string, unknown>;
@@ -227,7 +227,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const pendingData = pendingFile.content as Record<string, unknown>;
       const relationshipsPending = pendingData.relationships_follow_requests_sent as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsPending)) {
         relationshipsPending.forEach((pending: unknown) => {
           const typedPending = pending as Record<string, unknown>;
@@ -258,7 +258,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const recentData = recentFile.content as Record<string, unknown>;
       const relationshipsRecent = recentData.relationships_permanent_follow_requests as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsRecent)) {
         relationshipsRecent.forEach((recent: unknown) => {
           const typedRecent = recent as Record<string, unknown>;
@@ -289,7 +289,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const unfollowedData = unfollowedFile.content as Record<string, unknown>;
       const relationshipsUnfollowed = unfollowedData.relationships_unfollowed_users as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsUnfollowed)) {
         relationshipsUnfollowed.forEach((unfollowed: unknown) => {
           const typedUnfollowed = unfollowed as Record<string, unknown>;
@@ -320,7 +320,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const removedData = removedFile.content as Record<string, unknown>;
       const relationshipsRemoved = removedData.relationships_dismissed_suggested_users as Record<string, unknown>[];
-      
+
       if (Array.isArray(relationshipsRemoved)) {
         relationshipsRemoved.forEach((removed: unknown) => {
           const typedRemoved = removed as Record<string, unknown>;
@@ -351,13 +351,13 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const locationsData = locationsFile.content as Record<string, unknown>;
       const labelValues = locationsData.label_values as Record<string, unknown>[];
-      
+
       if (Array.isArray(labelValues)) {
         const locationsLabel = labelValues.find((item: unknown) => {
           const typedItem = item as Record<string, unknown>;
           return typedItem.label === 'Locations of interest';
         });
-        
+
         if (locationsLabel) {
           const vec = locationsLabel.vec as Record<string, unknown>[];
           if (Array.isArray(vec)) {
@@ -382,19 +382,19 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const personalData = personalInfoFile.content as Record<string, unknown>;
       const profileUser = personalData.profile_user as Record<string, unknown>[];
-      
+
       if (Array.isArray(profileUser) && profileUser.length > 0) {
         const userData = profileUser[0];
         const stringMapData = userData.string_map_data as Record<string, unknown>;
         const mediaMapData = userData.media_map_data as Record<string, unknown>;
-        
+
         if (stringMapData) {
           // Extract string data
           const getStringValue = (key: string): string | undefined => {
             const item = stringMapData[key] as { value?: string } | undefined;
             return item?.value;
           };
-          
+
           personalInfo.email = getStringValue('Email');
           personalInfo.phoneNumber = getStringValue('Phone Number');
           personalInfo.phoneConfirmed = getStringValue('Phone Confirmed') === 'True';
@@ -406,7 +406,7 @@ function parseInstagramData(files: ExtractedFile[]): {
           personalInfo.dateOfBirth = getStringValue('Date of birth');
           personalInfo.privateAccount = getStringValue('Private Account') === 'True';
         }
-        
+
         if (mediaMapData) {
           // Extract profile photo URI
           const profilePhoto = mediaMapData['Profile Photo'] as Record<string, unknown>;
@@ -426,7 +426,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const profileChangesData = profileChangesFile.content as Record<string, unknown>;
       const profileProfileChange = profileChangesData.profile_profile_change as Record<string, unknown>[];
-      
+
       if (Array.isArray(profileProfileChange)) {
         profileProfileChange.forEach((change: unknown) => {
           const typedChange = change as ProfileChange;
@@ -446,7 +446,7 @@ function parseInstagramData(files: ExtractedFile[]): {
     try {
       const recommendedTopicsData = recommendedTopicsFile.content as Record<string, unknown>;
       const topicsYourTopics = recommendedTopicsData.topics_your_topics as Record<string, unknown>[];
-      
+
       if (Array.isArray(topicsYourTopics)) {
         topicsYourTopics.forEach((topic: unknown) => {
           const typedTopic = topic as RecommendedTopic;
@@ -492,14 +492,14 @@ function parseInstagramData(files: ExtractedFile[]): {
     user.following_count = following.length;
   }
 
-  return { 
-    user, 
-    followers, 
-    following, 
-    blockedProfiles, 
-    pendingFollowRequests, 
-    recentFollowRequests, 
-    recentlyUnfollowed, 
+  return {
+    user,
+    followers,
+    following,
+    blockedProfiles,
+    pendingFollowRequests,
+    recentFollowRequests,
+    recentlyUnfollowed,
     removedSuggestions,
     locationsOfInterest,
     personalInfo,
@@ -510,21 +510,38 @@ function parseInstagramData(files: ExtractedFile[]): {
   };
 }
 
+// Progress callback type for real-time extraction updates
+export type ExtractionProgressCallback = (progress: number) => void;
+
 // Main function to extract and parse Instagram zip file
-export async function extractInstagramZip(file: File): Promise<ZipExtractionResult> {
+export async function extractInstagramZip(
+  file: File,
+  onProgress?: ExtractionProgressCallback
+): Promise<ZipExtractionResult> {
   try {
     const zip = new JSZip();
+
+    // Report initial loading progress (0-10%)
+    onProgress?.(5);
+
     const zipContent = await zip.loadAsync(file);
-    
+
+    onProgress?.(10);
+
     const extractedFiles: ExtractedFile[] = [];
-    
-    // Process all files in the zip
-    for (const [relativePath, zipEntry] of Object.entries(zipContent.files)) {
+
+    // Get all file entries for progress tracking
+    const fileEntries = Object.entries(zipContent.files).filter(([, entry]) => !entry.dir);
+    const totalFiles = fileEntries.length;
+    let processedFiles = 0;
+
+    // Process all files in the zip (extraction takes 10-95% of progress)
+    for (const [relativePath, zipEntry] of fileEntries) {
       if (!zipEntry.dir) {
         const fileType = getFileType(zipEntry.name);
         let content: unknown = null;
         let url: string | undefined;
-        
+
         try {
           if (fileType === 'json') {
             const text = await zipEntry.async('text');
@@ -552,7 +569,7 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
             }
           }
         }
-        
+
         extractedFiles.push({
           name: zipEntry.name,
           path: relativePath,
@@ -561,18 +578,26 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
           url,
           size: 0,
         });
+
+        // Update progress: extraction phase is 10-95% of total progress
+        processedFiles++;
+        const extractionProgress = 10 + Math.round((processedFiles / totalFiles) * 85);
+        onProgress?.(extractionProgress);
       }
     }
-    
+
+    // Report parsing phase start (parsing is fast, so minimal progress reserved)
+    onProgress?.(96);
+
     // Parse the extracted data
-    const { 
-      user, 
-      followers, 
-      following, 
-      blockedProfiles, 
-      pendingFollowRequests, 
-      recentFollowRequests, 
-      recentlyUnfollowed, 
+    const {
+      user,
+      followers,
+      following,
+      blockedProfiles,
+      pendingFollowRequests,
+      recentFollowRequests,
+      recentlyUnfollowed,
       removedSuggestions,
       locationsOfInterest,
       personalInfo,
@@ -582,27 +607,30 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
       stories,
     } = parseInstagramData(extractedFiles);
 
+    // Report parsing complete
+    onProgress?.(97);
+
     // Calculate unfollowers by finding raw data
     const followersFile = extractedFiles.find(f => f.path.includes('connections/followers_and_following/followers_1.json'));
     const followingFile = extractedFiles.find(f => f.path.includes('connections/followers_and_following/following.json'));
-    
+
     let unfollowers: InstagramList[] = [];
-    
+
     if (followersFile?.content && followingFile?.content) {
       try {
         const followersRawData = followersFile.content as Record<string, unknown>[];
         const followingRawData = followingFile.content as Record<string, unknown>;
         const relationshipsFollowing = followingRawData.relationships_following as Record<string, unknown>[];
-        
+
         if (Array.isArray(followersRawData) && Array.isArray(relationshipsFollowing)) {
           // Convert new following structure to old structure format for unfollowers calculation
           const followingForUnfollowers = relationshipsFollowing.map((followed: unknown) => {
             const typedFollowed = followed as Record<string, unknown>;
             const stringListData = typedFollowed.string_list_data as Record<string, unknown>[];
-            
+
             if (Array.isArray(stringListData) && stringListData.length > 0) {
               const item = stringListData[0] as Record<string, unknown>;
-              
+
               // Handle new structure: username is in title field
               if (typedFollowed.title && typeof typedFollowed.title === 'string' && typedFollowed.title.trim() !== '') {
                 return {
@@ -626,13 +654,13 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
             }
             return null;
           }).filter(Boolean);
-          
+
           const result = findUnfollowers(
-            followersRawData as Array<{ string_list_data: Array<{ value: string; timestamp: number; href?: string }> }>, 
+            followersRawData as Array<{ string_list_data: Array<{ value: string; timestamp: number; href?: string }> }>,
             followingForUnfollowers as Array<{ string_list_data: Array<{ value: string; timestamp: number; href?: string }> }>
           );
           unfollowers = result.unfollowers;
-          
+
           // Log the date filtering information for debugging
           if (result.dateFilterApplied) {
             console.log(`Unfollowers calculation: Applied date filter from ${new Date(result.lowestFollowersTimestamp * 1000).toISOString()}`);
@@ -643,8 +671,11 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
         console.warn('Error calculating unfollowers:', error);
       }
     }
-    
-    return {
+
+    // Report finalization
+    onProgress?.(99);
+
+    const result: ZipExtractionResult = {
       files: extractedFiles,
       userData: user,
       posts: posts || [],
@@ -665,6 +696,11 @@ export async function extractInstagramZip(file: File): Promise<ZipExtractionResu
       totalMediaCount: (posts?.length || 0) + (stories?.ig_stories?.length || 0),
       extractionDate: new Date().toISOString(),
     };
+
+    // Report complete
+    onProgress?.(100);
+
+    return result;
   } catch (error) {
     console.error('Error extracting zip file:', error);
     throw new Error('Failed to extract Instagram data. Please make sure the file is a valid Instagram export zip.');

@@ -66,34 +66,27 @@ const FileUpload = ({ onDataExtracted }: FileUploadProps) => {
     setUploadProgress(0)
 
     try {
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval)
-            return prev
-          }
-          return prev + Math.random() * 10
-        })
-      }, 200)
+      // Use real progress updates from the extraction process
+      const handleProgress = (progress: number) => {
+        setUploadProgress(progress);
+      };
 
-      const result = await extractInstagramZip(file)
+      const result = await extractInstagramZip(file, handleProgress);
 
-      clearInterval(progressInterval)
-      setUploadProgress(100)
-      setSuccess(true)
+      setUploadProgress(100);
+      setSuccess(true);
 
       // Store only essential connections data to avoid quota exceeded error
-      const essentialData = extractEssentialConnectionsData(result)
-      saveEssentialConnectionsData(essentialData)
+      const essentialData = extractEssentialConnectionsData(result);
+      saveEssentialConnectionsData(essentialData);
 
       // Call the callback with extracted data
-      onDataExtracted(result)
+      onDataExtracted(result);
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to extract Instagram data')
+      setError(err instanceof Error ? err.message : 'Failed to extract Instagram data');
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
   }
 
