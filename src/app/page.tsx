@@ -247,14 +247,30 @@ export default function Home() {
                   </span>
                 </p>
               </div>
-              {/* CTA Section */}
+              {/* CTA Section - Minimal Animated Help Button */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <InstructionsModal>
-                  <button className="relative cursor-pointer inline-flex items-center justify-center rounded-full px-8 py-4 text-base sm:text-lg font-medium transition-all duration-300 animate-neon-pulse group focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-950 backdrop-blur-md">
-                    <Download className="h-5 w-5 mr-2 text-pink-600 dark:text-pink-400 group-hover:text-pink-700 dark:group-hover:text-white transition-colors group-hover:animate-bounce drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" />
-                    <span className="animate-neon-text-pulse transition-all">
-                      How to Get Your Data
-                    </span>
+                  <button className="group relative cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-full transition-all duration-300">
+                    {/* Pulsing glow behind button - stronger in light mode */}
+                    <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-pink-400/40 via-purple-400/40 to-pink-400/40 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-pink-500/20 blur-md animate-pulse" />
+
+                    {/* Minimal pill button with shimmer */}
+                    <div className="relative flex items-center gap-2.5 px-6 py-3 sm:px-8 sm:py-3.5 rounded-full border border-pink-400/50 dark:border-pink-400/40 bg-white/95 dark:bg-slate-900/90 backdrop-blur-sm hover:border-pink-500 dark:hover:border-pink-400 hover:bg-pink-50/80 dark:hover:bg-pink-950/30 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/25 overflow-hidden">
+
+                      {/* Active shimmer sweep - pink tinted for light mode visibility */}
+                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-pink-300/40 dark:via-white/15 to-transparent" />
+
+                      {/* Icon with gentle bounce */}
+                      <Download className="h-4 w-4 sm:h-5 sm:w-5 text-pink-500 dark:text-pink-400 animate-[icon-bounce_2s_ease-in-out_infinite] group-hover:scale-110 transition-transform duration-300" />
+
+                      {/* Text */}
+                      <span className="relative text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200">
+                        How to Get Your Data
+                      </span>
+
+                      {/* Arrow slides in on hover */}
+                      <ArrowRight className="h-4 w-4 text-pink-500 dark:text-pink-400 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+                    </div>
                   </button>
                 </InstructionsModal>
               </div>
