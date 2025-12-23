@@ -255,7 +255,7 @@ export default function Home() {
                     <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-pink-400/40 via-purple-400/40 to-pink-400/40 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-pink-500/20 blur-md animate-pulse" />
 
                     {/* Minimal pill button with shimmer */}
-                    <div className="relative flex items-center gap-2.5 px-6 py-3 sm:px-8 sm:py-3.5 rounded-full border border-pink-400/50 dark:border-pink-400/40 bg-white/95 dark:bg-slate-900/90 backdrop-blur-sm hover:border-pink-500 dark:hover:border-pink-400 hover:bg-pink-50/80 dark:hover:bg-pink-950/30 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/25 overflow-hidden">
+                    <div className="relative flex items-center gap-2.5 px-6 py-3 sm:px-8 sm:py-3.5 rounded-full border backdrop-blur-sm border-pink-500 dark:border-pink-400 bg-pink-100/50 dark:bg-pink-950/30 transition-all duration-300 shadow-lg shadow-pink-500/25 overflow-hidden">
 
                       {/* Active shimmer sweep - pink tinted for light mode visibility */}
                       <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-pink-300/40 dark:via-white/15 to-transparent" />
