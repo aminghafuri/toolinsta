@@ -25,7 +25,8 @@ import {
   UserCheck,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Heart
 } from 'lucide-react'
 import {
   Pagination,
@@ -49,9 +50,11 @@ interface InstagramListsProps {
   recentlyUnfollowed: InstagramList[]
   removedSuggestions: InstagramList[]
   unfollowers: InstagramList[]
+  notFollowedBack: InstagramList[]
+  mutualFriends: InstagramList[]
 }
 
-type TabType = 'followers' | 'following' | 'blocked' | 'pending' | 'recent' | 'unfollowed' | 'removed' | 'unfollowers'
+type TabType = 'followers' | 'following' | 'blocked' | 'pending' | 'recent' | 'unfollowed' | 'removed' | 'unfollowers' | 'notFollowedBack' | 'mutualFriends'
 
 type SortOption = 'name-asc' | 'name-desc' | 'date-asc' | 'date-desc'
 
@@ -63,7 +66,9 @@ export default function InstagramLists({
   recentFollowRequests,
   recentlyUnfollowed,
   removedSuggestions,
-  unfollowers
+  unfollowers,
+  notFollowedBack,
+  mutualFriends
 }: InstagramListsProps) {
   const [selectedTab, setSelectedTab] = useState<TabType>('followers')
   const [searchTerm, setSearchTerm] = useState('')
@@ -73,21 +78,25 @@ export default function InstagramLists({
   const { toast } = useToast()
 
   const tabs = [
-    { id: 'followers' as TabType, label: 'Followers', count: followers.length, icon: Users, color: 'pink' },
-    { id: 'following' as TabType, label: 'Following', count: following.length, icon: UserPlus, color: 'purple' },
-    { id: 'unfollowers' as TabType, label: 'Unfollowers', count: unfollowers.length, icon: UserCheck, color: 'blue' },
-    { id: 'blocked' as TabType, label: 'Blocked', count: blockedProfiles.length, icon: UserX, color: 'red' },
-    { id: 'pending' as TabType, label: 'Pending', count: pendingFollowRequests.length, icon: Clock, color: 'orange' },
-    { id: 'recent' as TabType, label: 'Recent Requests', count: recentFollowRequests.length, icon: UserPlus, color: 'green' },
-    { id: 'unfollowed' as TabType, label: 'Unfollowed', count: recentlyUnfollowed.length, icon: UserMinus, color: 'yellow' },
-    { id: 'removed' as TabType, label: 'Removed Suggestions', count: removedSuggestions.length, icon: X, color: 'gray' },
+    { id: 'followers' as TabType, label: 'Followers', count: followers.length, icon: Users, color: 'pink', description: 'People who follow you' },
+    { id: 'following' as TabType, label: 'Following', count: following.length, icon: UserPlus, color: 'purple', description: 'People you follow' },
+    { id: 'mutualFriends' as TabType, label: 'Mutual', count: mutualFriends.length, icon: Heart, color: 'teal', description: 'People you both follow each other with' },
+    { id: 'unfollowers' as TabType, label: 'Unfollowers', count: unfollowers.length, icon: UserCheck, color: 'blue', description: 'People you follow who don\'t follow you back' },
+    { id: 'notFollowedBack' as TabType, label: 'Not Followed', count: notFollowedBack.length, icon: UserMinus, color: 'cyan', description: 'Followers you haven\'t followed back' },
+    { id: 'blocked' as TabType, label: 'Blocked', count: blockedProfiles.length, icon: UserX, color: 'red', description: 'Accounts you have blocked' },
+    { id: 'pending' as TabType, label: 'Pending', count: pendingFollowRequests.length, icon: Clock, color: 'orange', description: 'Follow requests waiting for approval' },
+    { id: 'recent' as TabType, label: 'Recent Requests', count: recentFollowRequests.length, icon: UserPlus, color: 'green', description: 'Your recent follow requests to others' },
+    { id: 'unfollowed' as TabType, label: 'Unfollowed', count: recentlyUnfollowed.length, icon: UserMinus, color: 'yellow', description: 'People you recently unfollowed' },
+    { id: 'removed' as TabType, label: 'Removed Suggestions', count: removedSuggestions.length, icon: X, color: 'gray', description: 'Suggested accounts you dismissed' },
   ]
 
   const getListData = (tab: TabType): InstagramList[] => {
     switch (tab) {
       case 'followers': return followers
       case 'following': return following
+      case 'mutualFriends': return mutualFriends
       case 'unfollowers': return unfollowers
+      case 'notFollowedBack': return notFollowedBack
       case 'blocked': return blockedProfiles
       case 'pending': return pendingFollowRequests
       case 'recent': return recentFollowRequests
@@ -100,6 +109,27 @@ export default function InstagramLists({
   const formatDate = (timestamp?: number) => {
     if (!timestamp) return 'Unknown date'
     return new Date(timestamp * 1000).toLocaleDateString()
+  }
+
+  /**
+   * Highlights search term within text by wrapping matches in a styled span
+   */
+  const highlightSearchTerm = (text: string, search: string): React.ReactNode => {
+    if (!search.trim()) return text
+
+    const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+    const parts = text.split(regex)
+
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <mark
+          key={index}
+          className="bg-yellow-300 dark:bg-yellow-600 text-foreground rounded px-0.5"
+        >
+          {part}
+        </mark>
+      ) : part
+    )
   }
 
   const sortList = (list: InstagramList[]): InstagramList[] => {
@@ -205,9 +235,15 @@ export default function InstagramLists({
       purple: isActive
         ? 'border-2 border-purple-500 text-purple-700 dark:text-purple-500'
         : `${neutralBorder} text-purple-600 dark:text-purple-400 hover:border-purple-500 dark:hover:border-purple-400 transition-colors delay-75 duration-200`,
+      teal: isActive
+        ? 'border-2 border-teal-500 text-teal-700 dark:text-teal-500'
+        : `${neutralBorder} text-teal-600 dark:text-teal-400 hover:border-teal-500 dark:hover:border-teal-400 transition-colors delay-75 duration-200`,
       blue: isActive
         ? 'border-2 border-blue-500 text-blue-700 dark:text-blue-500'
         : `${neutralBorder} text-blue-600 dark:text-blue-400 hover:border-blue-500 dark:hover:border-blue-400 transition-colors delay-75 duration-200`,
+      cyan: isActive
+        ? 'border-2 border-cyan-500 text-cyan-700 dark:text-cyan-500'
+        : `${neutralBorder} text-cyan-600 dark:text-cyan-400 hover:border-cyan-500 dark:hover:border-cyan-400 transition-colors delay-75 duration-200`,
       red: isActive
         ? 'border-2 border-red-500 text-red-700 dark:text-red-500'
         : `${neutralBorder} text-red-600 dark:text-red-400 hover:border-red-500 dark:hover:border-red-400 transition-colors delay-75 duration-200`,
@@ -269,14 +305,37 @@ export default function InstagramLists({
             ))}
           </div>
 
+          {/* Third stats row for remaining tabs */}
+          {tabs.length > 8 && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              {tabs.slice(8).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`text-center p-4 rounded-lg cursor-pointer ${getColorClasses(tab.color, selectedTab === tab.id)}`}
+                >
+                  <div className="text-2xl font-bold">
+                    {tab.count}
+                  </div>
+                  <div className="text-sm text-muted-foreground">{tab.label}</div>
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Selected List Display */}
           {selectedTab && (
             <div key={selectedTab} className="mt-8">
-              <div className="flex items-center gap-2 mb-6">
-                <Users className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">
-                  {tabs.find(t => t.id === selectedTab)?.label} ({getListData(selectedTab).length})
-                </h3>
+              <div className="flex flex-col gap-1 mb-6">
+                <div className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  <h3 className="text-lg font-semibold">
+                    {tabs.find(t => t.id === selectedTab)?.label} ({getListData(selectedTab).length})
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {tabs.find(t => t.id === selectedTab)?.description}
+                </p>
               </div>
               {/* Search and Filters */}
               <div className="mb-6">
@@ -362,7 +421,7 @@ export default function InstagramLists({
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="font-medium truncate" title={item.username}>
-                                  {item.username}
+                                  {highlightSearchTerm(item.username, searchTerm)}
                                 </div>
                                 {item.timestamp && (
                                   <div className="text-sm text-muted-foreground flex items-center gap-1">

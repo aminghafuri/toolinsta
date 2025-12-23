@@ -322,16 +322,37 @@ export default function Home() {
               )}
 
               {/* Instagram Lists with Interactive Stats */}
-              <InstagramLists
-                followers={extractedData?._isSummary ? essentialData?.followers || [] : extractedData.followers || []}
-                following={extractedData?._isSummary ? essentialData?.following || [] : extractedData.following || []}
-                blockedProfiles={extractedData?._isSummary ? essentialData?.blockedProfiles || [] : extractedData.blockedProfiles || []}
-                pendingFollowRequests={extractedData?._isSummary ? essentialData?.pendingFollowRequests || [] : extractedData.pendingFollowRequests || []}
-                recentFollowRequests={extractedData?._isSummary ? essentialData?.recentFollowRequests || [] : extractedData.recentFollowRequests || []}
-                recentlyUnfollowed={extractedData?._isSummary ? essentialData?.recentlyUnfollowed || [] : extractedData.recentlyUnfollowed || []}
-                removedSuggestions={extractedData?._isSummary ? essentialData?.removedSuggestions || [] : extractedData.removedSuggestions || []}
-                unfollowers={extractedData?._isSummary ? essentialData?.unfollowers || [] : extractedData.unfollowers || []}
-              />
+              {(() => {
+                const followers = extractedData?._isSummary ? essentialData?.followers || [] : extractedData.followers || [];
+                const following = extractedData?._isSummary ? essentialData?.following || [] : extractedData.following || [];
+                const followingUsernames = new Set(following.map(f => f.username.toLowerCase()));
+                const followerUsernames = new Set(followers.map(f => f.username.toLowerCase()));
+
+                // Not followed back - followers whom the user hasn't followed back
+                const notFollowedBack = followers.filter(
+                  follower => !followingUsernames.has(follower.username.toLowerCase())
+                );
+
+                // Mutual friends - users who both follow the user AND are followed by the user
+                const mutualFriends = followers.filter(
+                  follower => followingUsernames.has(follower.username.toLowerCase())
+                );
+
+                return (
+                  <InstagramLists
+                    followers={followers}
+                    following={following}
+                    blockedProfiles={extractedData?._isSummary ? essentialData?.blockedProfiles || [] : extractedData.blockedProfiles || []}
+                    pendingFollowRequests={extractedData?._isSummary ? essentialData?.pendingFollowRequests || [] : extractedData.pendingFollowRequests || []}
+                    recentFollowRequests={extractedData?._isSummary ? essentialData?.recentFollowRequests || [] : extractedData.recentFollowRequests || []}
+                    recentlyUnfollowed={extractedData?._isSummary ? essentialData?.recentlyUnfollowed || [] : extractedData.recentlyUnfollowed || []}
+                    removedSuggestions={extractedData?._isSummary ? essentialData?.removedSuggestions || [] : extractedData.removedSuggestions || []}
+                    unfollowers={extractedData?._isSummary ? essentialData?.unfollowers || [] : extractedData.unfollowers || []}
+                    notFollowedBack={notFollowedBack}
+                    mutualFriends={mutualFriends}
+                  />
+                );
+              })()}
             </TabsContent>
 
             <TabsContent value="personal" className="space-y-6">
