@@ -17,7 +17,7 @@ import StoriesDisplay from "@/components/StoriesDisplay"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ZipExtractionResult } from "@/types/instagram"
 import { loadEssentialConnectionsData, saveEssentialConnectionsData, extractEssentialConnectionsData, EssentialConnectionsData } from "@/lib/essentialStorage"
-import { Instagram, Upload, Download, Users, User, MapPin, History, Sparkles, HardDrive, ArrowRight } from "lucide-react"
+import { Instagram, Upload, Download, Users, User, MapPin, History, Sparkles, HardDrive, ArrowRight, Github, Heart, ExternalLink, Code2 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InstagramLimitationsWarning, InstagramLimitationsInfo } from "@/components/InstagramLimitationsWarning"
 import GooeyText from "@/components/GooeyText"
@@ -222,7 +222,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <main className="flex-1 w-full max-w-7xl min-h-screen mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {!extractedData ? (
           // Upload Section
           <div className="flex flex-col items-center justify-start sm:justify-center w-full sm:min-h-[calc(100vh-200px)] sm:py-16">
@@ -230,7 +230,7 @@ export default function Home() {
             <div className="text-center space-y-6 sm:space-y-8 mx-2 md:mx-auto min-h-[calc(100vh-80px)] flex flex-col justify-center sm:min-h-fit sm:block sm:h-auto w-full">
               {/* Main Heading */}
               <div className="sm:space-y-4 lg:space-y-8">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.5] font-[var(--font-roboto)]">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.5]">
                   <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent animate-gradient-x">
                     Drop Your Data
                     <br />
@@ -475,11 +475,103 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(0,0,0,0.8)] dark:border-[#1f1f1f] backdrop-blur-sm mt-16">
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-          <div className="text-center text-muted-foreground">
-            <p>Built with Next.js 15, Tailwind CSS v4, and TypeScript</p>
-            <p className="text-sm mt-2">Your data stays in your browser - no servers involved</p>
+      <footer className="relative border-t bg-[rgba(255,255,255,0.9)] dark:bg-[rgba(0,0,0,0.9)] dark:border-[#1f1f1f] backdrop-blur-xl mt-16 overflow-hidden">
+        {/* Decorative gradient accent at top */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink-500/50 to-transparent" />
+        
+        {/* Subtle background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-500/[0.02] via-purple-500/[0.02] to-transparent dark:from-pink-500/[0.03] dark:via-purple-500/[0.03] pointer-events-none" />
+        
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          <div className="flex flex-col items-center gap-8">
+            
+            {/* Open Source Badge & Message */}
+            <div className="flex flex-col items-center gap-4">
+              {/* Developer intro */}
+              <p className="flex items-center gap-2 text-muted-foreground text-sm sm:text-base">
+                <span>Made with</span>
+                <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />
+                <span>by</span>
+                <a 
+                  href="https://github.com/aminghafuri" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-semibold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+                >
+                  Amin Ghafuri
+                </a>
+              </p>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              {/* GitHub Link */}
+              <a
+                href="https://github.com/aminghafuri/toolinsta"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-white/5 hover:border-gray-900 dark:hover:border-white/30 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5"
+              >
+                <Github className="h-5 w-5 text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+                  Star on GitHub
+                </span>
+                <ExternalLink className="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-300" />
+              </a>
+
+              {/* ProductHunt Link */}
+              <a
+                href="https://producthunt.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-500/10 hover:border-orange-400 dark:hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-0.5"
+              >
+                {/* ProductHunt Icon (custom SVG) */}
+                <svg className="h-5 w-5 text-orange-500 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-1 5v10h2v-3h2c2.21 0 4-1.79 4-4s-1.79-4-4-4h-4zm2 2h2c1.105 0 2 .895 2 2s-.895 2-2 2h-2V9z"/>
+                </svg>
+                <span className="text-sm font-medium text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300 transition-colors duration-300">
+                  ProductHunt
+                </span>
+                <ExternalLink className="h-3.5 w-3.5 text-orange-400 group-hover:text-orange-500 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-300" />
+              </a>
+            </div>
+
+            {/* Divider */}
+            <div className="w-full max-w-xs h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
+
+            {/* Tech Stack & Privacy */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+              {/* Tech Stack */}
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <span className="text-xs text-muted-foreground">Built with</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                    Next.js 15
+                  </span>
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                    Tailwind v4
+                  </span>
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                    TypeScript
+                  </span>
+                </div>
+              </div>
+
+              {/* Privacy indicator */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span>100% Client-side • Your data never leaves your browser</span>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <p className="text-xs text-muted-foreground/60">
+              © {new Date().getFullYear()} Instagram Tool. MIT License.
+            </p>
           </div>
         </div>
       </footer>

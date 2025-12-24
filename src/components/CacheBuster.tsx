@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 // Update this version when you deploy a new version that needs cache clearing
-const APP_VERSION = "1.0.1";
+const APP_VERSION = "1.1.1";
 
 export function CacheBuster() {
     useEffect(() => {
