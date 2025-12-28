@@ -224,7 +224,6 @@
 }
 
 @keyframes gradient-x {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -241,16 +240,17 @@
 }
 
 @keyframes neon-pulse {
-
   0%,
   100% {
-    box-shadow: 0 0 5px var(--neon-shadow-1-start), 0 0 10px var(--neon-shadow-2-start);
+    box-shadow: 0 0 5px var(--neon-shadow-1-start),
+      0 0 10px var(--neon-shadow-2-start);
     background-color: var(--neon-bg-start);
     border-color: var(--neon-border-start);
   }
 
   50% {
-    box-shadow: 0 0 15px var(--neon-shadow-1-end), 0 0 30px var(--neon-shadow-2-end);
+    box-shadow: 0 0 15px var(--neon-shadow-1-end),
+      0 0 30px var(--neon-shadow-2-end);
     background-color: var(--neon-bg-end);
     border-color: var(--neon-border-end);
   }
@@ -261,7 +261,6 @@
 }
 
 @keyframes neon-text-pulse {
-
   0%,
   100% {
     filter: drop-shadow(0 0 4px var(--neon-text-shadow-start));
@@ -306,7 +305,6 @@
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);
@@ -328,25 +326,19 @@
 }
 
 @keyframes glow-pulse {
-
   0%,
   100% {
-    box-shadow:
-      0 0 20px rgba(236, 72, 153, 0.4),
-      0 0 40px rgba(168, 85, 247, 0.2),
-      0 0 60px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.4),
+      0 0 40px rgba(168, 85, 247, 0.2), 0 0 60px rgba(59, 130, 246, 0.1);
   }
 
   50% {
-    box-shadow:
-      0 0 30px rgba(236, 72, 153, 0.6),
-      0 0 60px rgba(168, 85, 247, 0.4),
-      0 0 90px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.6),
+      0 0 60px rgba(168, 85, 247, 0.4), 0 0 90px rgba(59, 130, 246, 0.2);
   }
 }
 
 @keyframes icon-bounce {
-
   0%,
   100% {
     transform: scale(1) rotate(0deg);
@@ -362,10 +354,12 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }
@@ -384,4 +378,37 @@
 
 .animate-icon-bounce {
   animation: icon-bounce 2s ease-in-out infinite;
+}
+
+/* Carousel Slide Animations */
+@keyframes slide-in-left {
+  from {
+    opacity: 0.5;
+    transform: translateX(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0.5;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out both;
 }

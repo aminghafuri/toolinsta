@@ -43,8 +43,8 @@ export default function RecommendedTopicsDisplay({ recommendedTopics, isSummary 
               variant="ghost"
               className="w-full p-4 sm:p-6 h-auto hover:bg-accent !whitespace-normal"
             >
-              <div className="flex items-center gap-3 w-full">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center justify-evenly md:justify-start md:gap-3 w-full">
+                <div className="hidden w-10 h-10 rounded-full bg-primary/10 md:flex items-center justify-center flex-shrink-0">
                   <Info className="h-5 w-5 text-primary" />
                 </div>
                 <div className="text-left" style={{ width: 'calc(100% - 5rem)', maxWidth: 'calc(100% - 5rem)', wordWrap: 'break-word', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
@@ -157,7 +157,7 @@ export default function RecommendedTopicsDisplay({ recommendedTopics, isSummary 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Sparkles className="hidden md:block h-5 w-5 text-primary" />
             Recommended Topics
             <Badge variant="secondary" className="ml-2">
               {recommendedTopics.length}

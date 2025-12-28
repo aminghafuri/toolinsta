@@ -70,10 +70,10 @@ export function InstagramLimitationsWarning({
               </div>
               <div>
                 <h3 className="font-semibold text-amber-900 dark:text-amber-100 text-lg">
-                  Instagram Export Limitation Detected
+                  Date Range Mismatch Detected
                 </h3>
                 <p className="text-amber-700 dark:text-amber-300 text-sm">
-                  Data quality issues found in your export
+                  Your export was created with a custom date range
                 </p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export function InstagramLimitationsWarning({
                     </div>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    This significant gap suggests Instagram missed early followers data in your export.
+                    This gap occurs because you selected a custom date range during export. Followers are filtered by date range, but followings are always exported in full. For accurate results, re-export with <strong>&quot;All time&quot;</strong> selected.
                   </p>
                 </div>
               </div>
@@ -141,8 +141,9 @@ export function InstagramLimitationsWarning({
               <div className="flex-1">
                 <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Smart Solution Applied</h4>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  This tool uses intelligent date filtering to improve unfollowers accuracy despite Instagram&apos;s limitations. 
-                  Only following data from the earliest followers date onwards is considered for calculations.
+                  This tool uses intelligent date filtering to improve unfollowers accuracy despite the date range mismatch. 
+                  Only following data from the earliest followers date onwards is considered for calculations. 
+                  For best results, re-export your data with <strong>&quot;All time&quot;</strong> selected.
                 </p>
               </div>
             </div>
@@ -177,7 +178,7 @@ export function InstagramLimitationsInfo() {
         <div className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 px-6 py-4 border-b border-blue-200 dark:border-blue-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-md">
+              <div className="hidden flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full md:flex items-center justify-center shadow-md">
                 <Info className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -185,7 +186,7 @@ export function InstagramLimitationsInfo() {
                   About Instagram Data Exports
                 </h3>
                 <p className="text-blue-700 dark:text-blue-300 text-sm">
-                  Understanding Instagram&apos;s export limitations
+                  Understanding date range selection
                 </p>
               </div>
             </div>
@@ -203,30 +204,30 @@ export function InstagramLimitationsInfo() {
         {/* Content */}
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Followers Data Issues */}
+            {/* Date Range Issue */}
             <div className="bg-white dark:bg-gray-800/50 rounded-lg p-5 border border-blue-200 dark:border-blue-800">
               <div className="flex items-start gap-3 mb-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                <div className="flex-shrink-0 w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Followers Data Issues</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Date Range Selection Matters</h4>
               </div>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <li className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Instagram often exports incomplete followers data</span>
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Custom date ranges only filter followers data</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Certain date ranges are frequently missing</span>
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Followings are always exported in full</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>This affects unfollowers calculations</span>
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>This date mismatch affects unfollowers calculations</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>Following data is usually complete and accurate</span>
+                  <span>Always select <strong>&quot;All time&quot;</strong> for accurate results</span>
                 </li>
               </ul>
             </div>
@@ -254,7 +255,7 @@ export function InstagramLimitationsInfo() {
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>This is Instagram&apos;s limitation, not a problem with this tool</span>
+                  <span>Re-export with <strong>&quot;All time&quot;</strong> for the most accurate results</span>
                 </li>
               </ul>
             </div>

@@ -19,7 +19,12 @@ const steps = [
     instructions: [
       "Tap your profile picture in the bottom right (mobile) or top right (web)",
       "Tap the three lines menu (☰) in the top right",
-      "Select \"Accounts Center\""
+      "Select \"Accounts Center\"",
+      "Scroll down and tap \"Your information and permissions\"",
+      "Select \"Export your information\"",
+      "Choose \"Create a export\"",
+      "Choose the account you want to export",
+      "Select \"Export to device\"",
     ]
   },
   {
@@ -28,15 +33,12 @@ const steps = [
     icon: <Settings className="h-5 w-5" />,
     description: "Navigate to the data download section:",
     instructions: [
-      "Scroll down and tap \"Your information and permissions\"",
-      "Select \"Export your information\"",
-      "Choose \"Create a export\"",
-      "Choose the account you want to export",
-      "Select \"Export to device\"",
-      "You can customize your information and Date range",
-      "Choose your \"Format\" to (JSON)",
-      "Choose \"Media quality\" (Lower quality recommended)",
-      "Tap \"Start export\""
+      { text: "You can customize your information and Date range", isTip: false },
+      { text: "Uncheck 'Messages' to significantly reduce download size. You can also uncheck 'Media' for an even smaller file if you don't need to view your posts and stories.", isTip: true },
+      { text: "Choose 'All time' for the Date range to ensure complete data coverage and avoid missing any information.", isTip: true },
+      { text: "Choose your \"Format\" to (JSON)", isTip: false },
+      { text: "Choose \"Media quality\" (Lower quality recommended)", isTip: false },
+      { text: "Tap \"Start export\"", isTip: false }
     ]
   },
   {
@@ -115,11 +117,24 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
                 {currentStepData?.description}
               </p>
               <ol className="list-decimal list-inside space-y-2 ml-4">
-                {currentStepData?.instructions.map((instruction, index) => (
-                  <li key={index} className="text-sm">
-                    {instruction}
-                  </li>
-                ))}
+                {currentStepData?.instructions.map((instruction, index) => {
+                  const isStringInstruction = typeof instruction === 'string'
+                  const text = isStringInstruction ? instruction : instruction.text
+                  const isTip = !isStringInstruction && instruction.isTip
+                  
+                  return (
+                    <li 
+                      key={index} 
+                      className={`text-sm ${
+                        isTip 
+                          ? 'text-amber-600 dark:text-amber-400 font-medium' 
+                          : ''
+                      }`}
+                    >
+                      {text}
+                    </li>
+                  )
+                })}
               </ol>
             </CardContent>
           </Card>
@@ -135,9 +150,6 @@ const InstructionsModal = ({ children }: InstructionsModalProps) => {
                 <li>• The download link expires after 4 days</li>
                 <li>• Your data is processed locally in your browser - nothing is sent to our servers</li>
                 <li>• This tool works with the standard Instagram data export format</li>
-                <li>• <strong>Instagram&apos;s export system has known issues with followers data</strong></li>
-                <li>• <strong>Followers list is often incomplete - Instagram misses certain date ranges</strong></li>
-                <li>• Following data is usually complete and accurate</li>
                 <li>• This is a limitation of Instagram&apos;s export system, not this tool</li>
                 <li>• The unfollowers calculation uses smart date filtering to improve accuracy</li>
               </ul>

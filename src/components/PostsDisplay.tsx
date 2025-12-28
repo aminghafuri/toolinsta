@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -21,6 +21,103 @@ export default function PostsDisplay({ posts, files, isSummary = false }: PostsD
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+
+  // Touch swipe support for Instagram-style carousel
+  const touchStartX = useRef<number | null>(null)
+  const touchCurrentX = useRef<number | null>(null)
+  const [swipeOffset, setSwipeOffset] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const minSwipeDistance = 50 // Minimum swipe distance to trigger navigation
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Don't interfere with video controls
+    if ((e.target as HTMLElement).tagName === 'VIDEO') return
+    
+    touchStartX.current = e.targetTouches[0].clientX
+    touchCurrentX.current = e.targetTouches[0].clientX
+    setIsTransitioning(false)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartX.current) return
+    // Don't interfere with video controls
+    if ((e.target as HTMLElement).tagName === 'VIDEO') return
+    
+    touchCurrentX.current = e.targetTouches[0].clientX
+    const diff = touchCurrentX.current - touchStartX.current
+    
+    // Limit the swipe offset with resistance at edges
+    if (selectedPost !== null && posts[selectedPost]) {
+      const post = posts[selectedPost]
+      const isFirstSlide = currentMediaIndex === 0
+      const isLastSlide = currentMediaIndex === post.media.length - 1
+      
+      // Apply resistance at the edges (reduce movement by 70%)
+      if ((isFirstSlide && diff > 0) || (isLastSlide && diff < 0)) {
+        setSwipeOffset(diff * 0.3)
+      } else {
+        setSwipeOffset(diff)
+      }
+    }
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchCurrentX.current) {
+      setSwipeOffset(0)
+      return
+    }
+
+    const distance = touchStartX.current - touchCurrentX.current
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+    
+    // Get the container width for calculating the full slide distance
+    const containerWidth = containerRef.current?.offsetWidth || 400
+
+    // Reset touch refs
+    touchStartX.current = null
+    touchCurrentX.current = null
+
+    if (isLeftSwipe && selectedPost !== null && posts[selectedPost]) {
+      const post = posts[selectedPost]
+      if (currentMediaIndex < post.media.length - 1) {
+        // Animate to full left (negative = slide left to show next)
+        setIsTransitioning(true)
+        setSwipeOffset(-containerWidth)
+        
+        // After animation completes, change index and reset
+        setTimeout(() => {
+          setIsTransitioning(false)
+          setCurrentMediaIndex(prev => prev + 1)
+          setSwipeOffset(0)
+        }, 300)
+        return
+      }
+    } else if (isRightSwipe && selectedPost !== null) {
+      if (currentMediaIndex > 0) {
+        // Animate to full right (positive = slide right to show previous)
+        setIsTransitioning(true)
+        setSwipeOffset(containerWidth)
+        
+        // After animation completes, change index and reset
+        setTimeout(() => {
+          setIsTransitioning(false)
+          setCurrentMediaIndex(prev => prev - 1)
+          setSwipeOffset(0)
+        }, 300)
+        return
+      }
+    }
+
+    // If no slide change, animate back to center
+    setIsTransitioning(true)
+    setSwipeOffset(0)
+    setTimeout(() => {
+      setIsTransitioning(false)
+    }, 300)
+  }
 
   useEffect(() => {
     setMounted(true)
@@ -283,7 +380,13 @@ export default function PostsDisplay({ posts, files, isSummary = false }: PostsD
                   </Button>
 
                   {/* Post Media */}
-                  <div className="relative">
+                  <div 
+                    className="relative overflow-hidden"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    ref={containerRef}
+                  >
                     {post.media.length === 1 ? (
                       // Single media
                       getMediaType(post.media[0]) === 'video' ? (
@@ -303,52 +406,120 @@ export default function PostsDisplay({ posts, files, isSummary = false }: PostsD
                         />
                       )
                     ) : (
-                      // Carousel
+                      // Instagram-style Carousel with adjacent slides using absolute positioning
                       <div className="relative">
-                        {getMediaType(post.media[currentMediaIndex]) === 'video' ? (
-                          <video
-                            src={getFileUrl(post.media[currentMediaIndex].uri) || ''}
-                            controls
-                            autoPlay
-                            className="w-full h-auto max-h-[80vh] object-contain rounded"
-                          />
-                        ) : (
-                          <Image
-                            src={getFileUrl(post.media[currentMediaIndex].uri) || ''}
-                            alt={`Post media ${currentMediaIndex + 1}`}
-                            width={1200}
-                            height={800}
-                            className="w-full h-auto max-h-[80vh] object-contain rounded"
-                          />
+                        {/* Previous slide - absolutely positioned to the left */}
+                        {currentMediaIndex > 0 && (
+                          <div 
+                            className={`absolute top-0 right-full w-full h-full flex items-center justify-center ${isTransitioning ? 'transition-transform duration-300 ease-out' : ''}`}
+                            style={{
+                              transform: `translateX(${swipeOffset}px)`,
+                            }}
+                          >
+                            {getMediaType(post.media[currentMediaIndex - 1]) === 'video' ? (
+                              <video
+                                src={getFileUrl(post.media[currentMediaIndex - 1].uri) || ''}
+                                className="w-full h-auto max-h-[80vh] object-contain rounded"
+                                muted
+                              />
+                            ) : (
+                              <Image
+                                src={getFileUrl(post.media[currentMediaIndex - 1].uri) || ''}
+                                alt={`Post media ${currentMediaIndex}`}
+                                width={1200}
+                                height={800}
+                                className="w-full h-auto max-h-[80vh] object-contain rounded pointer-events-none select-none"
+                                draggable={false}
+                              />
+                            )}
+                          </div>
                         )}
 
-                        {/* Carousel Navigation */}
+                        {/* Current slide */}
+                        <div 
+                          className={`${isTransitioning ? 'transition-transform duration-300 ease-out' : ''}`}
+                          style={{
+                            transform: `translateX(${swipeOffset}px)`,
+                          }}
+                        >
+                          {getMediaType(post.media[currentMediaIndex]) === 'video' ? (
+                            <video
+                              src={getFileUrl(post.media[currentMediaIndex].uri) || ''}
+                              controls
+                              autoPlay
+                              className="w-full h-auto max-h-[80vh] object-contain rounded"
+                            />
+                          ) : (
+                            <Image
+                              src={getFileUrl(post.media[currentMediaIndex].uri) || ''}
+                              alt={`Post media ${currentMediaIndex + 1}`}
+                              width={1200}
+                              height={800}
+                              className="w-full h-auto max-h-[80vh] object-contain rounded pointer-events-none select-none"
+                              draggable={false}
+                            />
+                          )}
+                        </div>
+
+                        {/* Next slide - absolutely positioned to the right */}
+                        {currentMediaIndex < post.media.length - 1 && (
+                          <div 
+                            className={`absolute top-0 left-full w-full h-full flex items-center justify-center ${isTransitioning ? 'transition-transform duration-300 ease-out' : ''}`}
+                            style={{
+                              transform: `translateX(${swipeOffset}px)`,
+                            }}
+                          >
+                            {getMediaType(post.media[currentMediaIndex + 1]) === 'video' ? (
+                              <video
+                                src={getFileUrl(post.media[currentMediaIndex + 1].uri) || ''}
+                                className="w-full h-auto max-h-[80vh] object-contain rounded"
+                                muted
+                              />
+                            ) : (
+                              <Image
+                                src={getFileUrl(post.media[currentMediaIndex + 1].uri) || ''}
+                                alt={`Post media ${currentMediaIndex + 2}`}
+                                width={1200}
+                                height={800}
+                                className="w-full h-auto max-h-[80vh] object-contain rounded pointer-events-none select-none"
+                                draggable={false}
+                              />
+                            )}
+                          </div>
+                        )}
+
+                        {/* Carousel Navigation - hidden on touch devices, visible on desktop */}
                         {post.media.length > 1 && (
                           <>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white hidden md:flex z-10"
                               onClick={prevMedia}
+                              disabled={currentMediaIndex === 0}
                             >
                               <ChevronLeft className="w-4 h-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white hidden md:flex z-10"
                               onClick={nextMedia}
+                              disabled={currentMediaIndex === post.media.length - 1}
                             >
                               <ChevronRight className="w-4 h-4" />
                             </Button>
 
                             {/* Carousel indicators */}
-                            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
+                            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
                               {post.media.map((_, mediaIndex) => (
                                 <button
                                   key={mediaIndex}
-                                  className={`w-2 h-2 rounded-full transition-colors ${mediaIndex === currentMediaIndex ? 'bg-white' : 'bg-white/50'
-                                    }`}
+                                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                                    mediaIndex === currentMediaIndex 
+                                      ? 'bg-white scale-110' 
+                                      : 'bg-white/50 hover:bg-white/70'
+                                  }`}
                                   onClick={() => setCurrentMediaIndex(mediaIndex)}
                                 />
                               ))}

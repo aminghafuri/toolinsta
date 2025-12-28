@@ -194,9 +194,13 @@ export default function Home() {
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between min-w-0">
             <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
-              <Instagram className="h-6 w-6 sm:h-8 sm:w-8 text-pink-600 flex-shrink-0" />
+              <img 
+                src="/icons/icon-192x192.png" 
+                alt="ToolInsta Logo" 
+                className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 rounded-md"
+              />
               <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent truncate">
-                Instagram Tool
+                Toolinsta
               </h1>
             </div>
 
@@ -204,13 +208,13 @@ export default function Home() {
               {extractedData && (
                 <>
                   {/* Mobile: Storage icon, Desktop: Badge */}
-                  <div className="p-1 border border-green-600 rounded-md flex-shrink-0 sm:hidden" title="Data Loaded">
+                  <div className="h-8 w-8 border border-green-600 rounded-md flex-shrink-0 sm:hidden flex items-center justify-center" title="Data Loaded">
                     <HardDrive className="h-4 w-4 text-green-600" />
                   </div>
-                  <Badge variant="outline" className="text-green-600 border-green-600 text-center text-xs sm:text-sm hidden sm:inline-flex">
+                  <Badge variant="outline" className="h-8 rounded-md text-green-600 border-green-600 text-center text-xs sm:text-sm hidden sm:inline-flex items-center">
                     Data Loaded
                   </Badge>
-                  <Button variant="outline" size="sm" onClick={handleClearData} className="text-xs sm:text-sm px-2 sm:px-3">
+                  <Button variant="outline" size="sm" onClick={handleClearData} className="h-8 text-xs sm:text-sm px-2 sm:px-3">
                     <span className="hidden sm:inline">Clear Data</span>
                     <span className="sm:hidden">Clear</span>
                   </Button>
@@ -504,13 +508,13 @@ export default function Home() {
             </div>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4">
               {/* GitHub Link */}
               <a
                 href="https://github.com/aminghafuri/toolinsta"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-white/5 hover:border-gray-900 dark:hover:border-white/30 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5"
+                className="group relative flex items-center justify-center gap-2.5 min-w-[180px] px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-white/5 hover:border-gray-900 dark:hover:border-white/30 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5"
               >
                 <Github className="h-5 w-5 text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300" />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
@@ -524,7 +528,7 @@ export default function Home() {
                 href="https://producthunt.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-500/10 hover:border-orange-400 dark:hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-0.5"
+                className="group relative flex items-center justify-center gap-2.5 min-w-[180px] px-5 py-2.5 rounded-xl border border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-500/10 hover:border-orange-400 dark:hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 hover:-translate-y-0.5"
               >
                 {/* ProductHunt Icon (custom SVG) */}
                 <svg className="h-5 w-5 text-orange-500 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300" viewBox="0 0 24 24" fill="currentColor">
@@ -541,7 +545,7 @@ export default function Home() {
             <div className="w-full max-w-xs h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
 
             {/* Tech Stack & Privacy */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+            <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-8">
               {/* Tech Stack */}
               <div className="flex items-center gap-2 flex-wrap justify-center">
                 <span className="text-xs text-muted-foreground">Built with</span>
