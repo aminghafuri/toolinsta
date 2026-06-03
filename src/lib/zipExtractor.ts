@@ -190,30 +190,32 @@ function parseInstagramData(files: ExtractedFile[]): {
     }
   }
 
-  // Parse blocked profiles
+  // Parse blocked profiles 
   const blockedFile = files.find(f => f.path.includes('connections/followers_and_following/blocked_profiles.json'));
   if (blockedFile?.content) {
     try {
-      const blockedData = blockedFile.content as Record<string, unknown>;
-      const relationshipsBlocked = blockedData.relationships_blocked_users as Record<string, unknown>[];
+      const blockedRaw = blockedFile.content as Record<string, unknown>[];
+      if (!Array.isArray(blockedRaw)) {
+        console.warn('Unexpected blocked_profiles.json format: expected a top-level array.');
+      } else {
+        blockedRaw.forEach((entry) => {
+          const labelValues = entry.label_values as Array<{ label: string; value: string }> | undefined;
+          if (!Array.isArray(labelValues)) return;
 
-      if (Array.isArray(relationshipsBlocked)) {
-        relationshipsBlocked.forEach((blocked: unknown) => {
-          const typedBlocked = blocked as Record<string, unknown>;
-          const stringListData = typedBlocked.string_list_data as Record<string, unknown>[];
-          if (Array.isArray(stringListData)) {
-            stringListData.forEach((item: unknown) => {
-              const typedItem = item as Record<string, unknown>;
-              const username = typedBlocked.title as string;
-              if (username && username.trim()) {
-                blockedProfiles.push({
-                  username: username.trim(),
-                  timestamp: typedItem.timestamp as number,
-                  href: typedItem.href as string
-                });
-              }
-            });
-          }
+          const getValue = (label: string) =>
+            labelValues.find((lv) => lv.label === label)?.value ?? '';
+
+          const username = getValue('Username').trim();
+          if (!username) return;
+
+          const urlValue = getValue('URL');
+          const href = urlValue || `https://www.instagram.com/_u/${username}`;
+
+          blockedProfiles.push({
+            username,
+            timestamp: entry.timestamp as number,
+            href,
+          });
         });
       }
     } catch (error) {
@@ -221,30 +223,32 @@ function parseInstagramData(files: ExtractedFile[]): {
     }
   }
 
-  // Parse pending follow requests
+  // Parse pending follow requests 
   const pendingFile = files.find(f => f.path.includes('connections/followers_and_following/pending_follow_requests.json'));
   if (pendingFile?.content) {
     try {
-      const pendingData = pendingFile.content as Record<string, unknown>;
-      const relationshipsPending = pendingData.relationships_follow_requests_sent as Record<string, unknown>[];
+      const pendingRaw = pendingFile.content as Record<string, unknown>[];
+      if (!Array.isArray(pendingRaw)) {
+        console.warn('Unexpected pending_follow_requests.json format: expected a top-level array.');
+      } else {
+        pendingRaw.forEach((entry) => {
+          const labelValues = entry.label_values as Array<{ label: string; value: string }> | undefined;
+          if (!Array.isArray(labelValues)) return;
 
-      if (Array.isArray(relationshipsPending)) {
-        relationshipsPending.forEach((pending: unknown) => {
-          const typedPending = pending as Record<string, unknown>;
-          const stringListData = typedPending.string_list_data as Record<string, unknown>[];
-          if (Array.isArray(stringListData)) {
-            stringListData.forEach((item: unknown) => {
-              const typedItem = item as Record<string, unknown>;
-              const username = typedItem.value as string;
-              if (username) {
-                pendingFollowRequests.push({
-                  username,
-                  timestamp: typedItem.timestamp as number,
-                  href: typedItem.href as string
-                });
-              }
-            });
-          }
+          const getValue = (label: string) =>
+            labelValues.find((lv) => lv.label === label)?.value ?? '';
+
+          const username = getValue('Username').trim();
+          if (!username) return;
+
+          const urlValue = getValue('URL');
+          const href = urlValue || `https://www.instagram.com/_u/${username}`;
+
+          pendingFollowRequests.push({
+            username,
+            timestamp: entry.timestamp as number,
+            href,
+          });
         });
       }
     } catch (error) {
@@ -256,26 +260,28 @@ function parseInstagramData(files: ExtractedFile[]): {
   const recentFile = files.find(f => f.path.includes('connections/followers_and_following/recent_follow_requests.json'));
   if (recentFile?.content) {
     try {
-      const recentData = recentFile.content as Record<string, unknown>;
-      const relationshipsRecent = recentData.relationships_permanent_follow_requests as Record<string, unknown>[];
+      const recentRaw = recentFile.content as Record<string, unknown>[];
+      if (!Array.isArray(recentRaw)) {
+        console.warn('Unexpected recent_follow_requests.json format: expected a top-level array.');
+      } else {
+        recentRaw.forEach((entry) => {
+          const labelValues = entry.label_values as Array<{ label: string; value: string }> | undefined;
+          if (!Array.isArray(labelValues)) return;
 
-      if (Array.isArray(relationshipsRecent)) {
-        relationshipsRecent.forEach((recent: unknown) => {
-          const typedRecent = recent as Record<string, unknown>;
-          const stringListData = typedRecent.string_list_data as Record<string, unknown>[];
-          if (Array.isArray(stringListData)) {
-            stringListData.forEach((item: unknown) => {
-              const typedItem = item as Record<string, unknown>;
-              const username = typedItem.value as string;
-              if (username) {
-                recentFollowRequests.push({
-                  username,
-                  timestamp: typedItem.timestamp as number,
-                  href: typedItem.href as string
-                });
-              }
-            });
-          }
+          const getValue = (label: string) =>
+            labelValues.find((lv) => lv.label === label)?.value ?? '';
+
+          const username = getValue('Username').trim();
+          if (!username) return;
+
+          const urlValue = getValue('URL');
+          const href = urlValue || `https://www.instagram.com/_u/${username}`;
+
+          recentFollowRequests.push({
+            username,
+            timestamp: entry.timestamp as number,
+            href,
+          });
         });
       }
     } catch (error) {
@@ -287,26 +293,28 @@ function parseInstagramData(files: ExtractedFile[]): {
   const unfollowedFile = files.find(f => f.path.includes('connections/followers_and_following/recently_unfollowed_profiles.json'));
   if (unfollowedFile?.content) {
     try {
-      const unfollowedData = unfollowedFile.content as Record<string, unknown>;
-      const relationshipsUnfollowed = unfollowedData.relationships_unfollowed_users as Record<string, unknown>[];
+      const unfollowedRaw = unfollowedFile.content as Record<string, unknown>[];
+      if (!Array.isArray(unfollowedRaw)) {
+        console.warn('Unexpected recently_unfollowed_profiles.json format: expected a top-level array.');
+      } else {
+        unfollowedRaw.forEach((entry) => {
+          const labelValues = entry.label_values as Array<{ label: string; value: string }> | undefined;
+          if (!Array.isArray(labelValues)) return;
 
-      if (Array.isArray(relationshipsUnfollowed)) {
-        relationshipsUnfollowed.forEach((unfollowed: unknown) => {
-          const typedUnfollowed = unfollowed as Record<string, unknown>;
-          const stringListData = typedUnfollowed.string_list_data as Record<string, unknown>[];
-          if (Array.isArray(stringListData)) {
-            stringListData.forEach((item: unknown) => {
-              const typedItem = item as Record<string, unknown>;
-              const username = typedItem.value as string;
-              if (username) {
-                recentlyUnfollowed.push({
-                  username,
-                  timestamp: typedItem.timestamp as number,
-                  href: typedItem.href as string
-                });
-              }
-            });
-          }
+          const getValue = (label: string) =>
+            labelValues.find((lv) => lv.label === label)?.value ?? '';
+
+          const username = getValue('Username').trim();
+          if (!username) return;
+
+          const urlValue = getValue('URL');
+          const href = urlValue || `https://www.instagram.com/_u/${username}`;
+
+          recentlyUnfollowed.push({
+            username,
+            timestamp: entry.timestamp as number,
+            href,
+          });
         });
       }
     } catch (error) {
@@ -318,26 +326,28 @@ function parseInstagramData(files: ExtractedFile[]): {
   const removedFile = files.find(f => f.path.includes('connections/followers_and_following/removed_suggestions.json'));
   if (removedFile?.content) {
     try {
-      const removedData = removedFile.content as Record<string, unknown>;
-      const relationshipsRemoved = removedData.relationships_dismissed_suggested_users as Record<string, unknown>[];
+      const removedRaw = removedFile.content as Record<string, unknown>[];
+      if (!Array.isArray(removedRaw)) {
+        console.warn('Unexpected removed_suggestions.json format: expected a top-level array.');
+      } else {
+        removedRaw.forEach((entry) => {
+          const labelValues = entry.label_values as Array<{ label: string; value: string }> | undefined;
+          if (!Array.isArray(labelValues)) return;
 
-      if (Array.isArray(relationshipsRemoved)) {
-        relationshipsRemoved.forEach((removed: unknown) => {
-          const typedRemoved = removed as Record<string, unknown>;
-          const stringListData = typedRemoved.string_list_data as Record<string, unknown>[];
-          if (Array.isArray(stringListData)) {
-            stringListData.forEach((item: unknown) => {
-              const typedItem = item as Record<string, unknown>;
-              const username = typedItem.value as string;
-              if (username) {
-                removedSuggestions.push({
-                  username,
-                  timestamp: typedItem.timestamp as number,
-                  href: typedItem.href as string
-                });
-              }
-            });
-          }
+          const getValue = (label: string) =>
+            labelValues.find((lv) => lv.label === label)?.value ?? '';
+
+          const username = getValue('Username').trim();
+          if (!username) return;
+
+          const urlValue = getValue('URL');
+          const href = urlValue || `https://www.instagram.com/_u/${username}`;
+
+          removedSuggestions.push({
+            username,
+            timestamp: entry.timestamp as number,
+            href,
+          });
         });
       }
     } catch (error) {
